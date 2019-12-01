@@ -21,7 +21,7 @@
 namespace phd { namespace __detail { inline namespace __0 {
 
 	template <typename _Type>
-	union alignas(_Type) __uninit {
+	struct alignas(_Type) __uninit {
 		constexpr __uninit() : _M_dummy() {
 		}
 
@@ -41,8 +41,10 @@ namespace phd { namespace __detail { inline namespace __0 {
 			return ::std::move(__wrapped_value._M_value);
 		}
 
-		char _M_dummy;
-		_Type _M_value;
+		union {
+			char _M_dummy;
+			_Type _M_value;
+		};
 	};
 
 }}} // namespace phd::__detail::__0

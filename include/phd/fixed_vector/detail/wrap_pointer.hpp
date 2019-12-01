@@ -24,6 +24,8 @@
 
 namespace phd { namespace __detail { inline namespace __0 {
 
+	class __contiguous_iterator_tag : public ::std::random_access_iterator_tag {};
+
 	template <typename _Type>
 	using __is_unwrappable_value_test = decltype(__unwrap_value(::std::declval<_Type>()));
 
@@ -65,7 +67,7 @@ namespace phd { namespace __detail { inline namespace __0 {
 		using __unwrapped_type = decltype(__unwrap(::std::declval<_Type&>()));
 
 	public:
-		using iterator_category = std::contiguous_iterator_tag;
+		using iterator_category = __contiguous_iterator_tag;
 		using value_type        = ::std::remove_cvref_t<__unwrapped_type>;
 		using element_type      = ::std::remove_reference_t<__unwrapped_type>;
 		using reference         = ::std::add_lvalue_reference_t<__unwrapped_type>;

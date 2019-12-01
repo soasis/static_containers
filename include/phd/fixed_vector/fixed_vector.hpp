@@ -46,14 +46,14 @@ namespace phd { inline namespace __0 {
 		using __alloc_traits = ::std::allocator_traits<__alloc>;
 
 	public:
-		constexpr fixed_vector() noexcept : _M_elements(), _M_size() {
+		constexpr fixed_vector() noexcept : _M_size(), _M_elements() {
 		}
 
-		fixed_vector(::std::initializer_list<value_type> __values) noexcept : _M_elements(), _M_size() {
+		fixed_vector(::std::initializer_list<value_type> __values) noexcept : _M_size(), _M_elements() {
 			this->insert(this->cend(), ::std::move(__values));
 		}
 
-		fixed_vector(size_type __count) noexcept : _M_elements(), _M_size() {
+		fixed_vector(size_type __count) noexcept : _M_size(), _M_elements() {
 			this->insert(this->cend(), __count, value_type{});
 		}
 
