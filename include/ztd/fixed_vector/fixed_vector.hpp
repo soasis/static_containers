@@ -16,8 +16,8 @@
 #ifndef ZTD_FIXED_VECTOR_FIXED_VECTOR_HPP
 #define ZTD_FIXED_VECTOR_FIXED_VECTOR_HPP
 
-#include <phd/fixed_vector/detail/uninit.hpp>
-#include <phd/fixed_vector/detail/wrap_pointer.hpp>
+#include <ztd/fixed_vector/detail/uninit.hpp>
+#include <ztd/fixed_vector/detail/wrap_pointer.hpp>
 
 #include <cstddef>
 #include <initializer_list>
@@ -121,6 +121,7 @@ namespace ztd {
 			}
 			__alloc_traits::construct(
 			     __al, __fv_detail::__adl::__adl_to_address(__where_first), ::std::forward<_Args>(__args)...);
+			return __where_first;
 		}
 
 		iterator insert(const_iterator __where, value_type&& __value) noexcept(
@@ -410,6 +411,167 @@ namespace ztd {
 					this->_M_size -= 1;
 				}
 			}
+		}
+	};
+
+	template <typename _Ty>
+	class fixed_vector<_Ty, 0> {
+	public:
+		using value_type      = _Ty;
+		using reference       = ::std::add_lvalue_reference_t<_Ty>;
+		using const_reference = ::std::add_lvalue_reference_t<const _Ty>;
+		using pointer         = ::std::add_pointer_t<_Ty>;
+		using const_pointer   = ::std::add_pointer_t<const _Ty>;
+		using iterator        = __fv_detail::__wrap_pointer<__fv_detail::__uninit<_Ty>>;
+		using const_iterator  = __fv_detail::__wrap_pointer<const __fv_detail::__uninit<_Ty>>;
+		using size_type       = ::std::size_t;
+		using difference_type = ::std::ptrdiff_t;
+		inline static constexpr const ::std::size_t inline_capacity = 0;
+
+	public:
+		constexpr fixed_vector() noexcept {
+		}
+
+		constexpr fixed_vector(::std::initializer_list<value_type>) noexcept {
+		}
+
+		constexpr fixed_vector(size_type) noexcept {
+		}
+
+		template <typename... _Args>
+		void emplace_back(_Args&&...) noexcept {
+		}
+
+		void push_back(const value_type&) noexcept {
+		}
+
+		void push_back(value_type&&) noexcept {
+		}
+
+		template <typename... _Args>
+		void emplace_front(_Args&&...) noexcept {
+		}
+
+		void push_front(const value_type&) noexcept {
+		}
+
+		void push_front(value_type&&) noexcept {
+		}
+
+		template <typename... _Args>
+		iterator emplace(const_iterator, _Args&&...) noexcept {
+			return iterator(nullptr);
+		}
+
+		constexpr iterator insert(const_iterator, value_type&&) noexcept {
+			return iterator(nullptr);
+		}
+
+		constexpr iterator insert(const_iterator, const value_type&) noexcept {
+			return iterator(nullptr);
+		}
+
+		constexpr iterator insert(const_iterator, ::std::initializer_list<value_type>) noexcept {
+			return iterator(nullptr);
+		}
+
+		constexpr iterator insert(const_iterator, size_type) noexcept {
+			return iterator(nullptr);
+		}
+
+		constexpr iterator insert(const_iterator, size_type, const value_type&) noexcept {
+			return iterator(nullptr);
+		}
+
+		template <typename _First, typename _Last,
+		     ::std::enable_if_t<
+		          !::std::is_integral_v<
+		               _First> && !::std::is_same_v<::std::remove_cvref_t<_Last>, value_type>>* = nullptr>
+		constexpr iterator insert(const_iterator, _First, _Last) {
+			return iterator(nullptr);
+		}
+
+		constexpr iterator erase() noexcept {
+			return iterator(nullptr);
+		}
+
+		constexpr iterator erase(const_iterator, const_iterator) noexcept {
+			return iterator(nullptr);
+		}
+
+		constexpr void pop_back() noexcept {
+		}
+
+		constexpr void pop_front() noexcept {
+		}
+
+		constexpr reference front() noexcept {
+		}
+
+		constexpr const_reference front() const noexcept {
+		}
+
+		constexpr reference back() noexcept {
+		}
+
+		constexpr const_reference back() const noexcept {
+			return this->_M_elements[this->_M_size - 1]._M_value;
+		}
+
+		constexpr bool empty() const noexcept {
+			return this->_M_size == 0;
+		}
+
+		constexpr void clear() noexcept {
+		}
+
+		constexpr size_type size() const noexcept {
+			return 0;
+		}
+
+		constexpr size_type capacity() const noexcept {
+			return 0;
+		}
+
+		constexpr pointer data() noexcept {
+			return nullptr;
+		}
+
+		constexpr const_pointer data() const noexcept {
+			return nullptr;
+		}
+
+		constexpr iterator begin() noexcept {
+			return iterator(nullptr);
+		}
+
+		constexpr const_iterator begin() const noexcept {
+			return const_iterator(nullptr);
+		}
+
+		constexpr const_iterator cbegin() const noexcept {
+			return const_iterator(nullptr);
+		}
+
+		constexpr iterator end() noexcept {
+			return iterator(nullptr);
+		}
+
+		constexpr const_iterator end() const noexcept {
+			return const_iterator(nullptr);
+		}
+
+		constexpr const_iterator cend() const noexcept {
+			return const_iterator(nullptr);
+		}
+
+		constexpr void resize(size_type __count) noexcept {
+		}
+
+		constexpr void resize(size_type, const value_type&) noexcept {
+		}
+
+		~fixed_vector() {
 		}
 	};
 

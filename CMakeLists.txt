@@ -13,7 +13,7 @@
 #
 # ============================================================================
 
-cmake_minimum_required(VERSION 3.13.0)
+cmake_minimum_required(VERSION 3.15.0)
 
 # # Project declaration
 # informs about the project, gives a description, version and MOST IMPORTANTLY
@@ -27,7 +27,7 @@ project(ztd.fixed_vector
 # Include modules useful to the project, whether locally made in our own cmake DIRECTORY
 # our from the standard cmake libraries
 # Add home-rolled modules path to front of module path list
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # # # Top-Level Directories
 # Check if this is the top-level project or not
@@ -66,12 +66,10 @@ option(ZTD_FIXED_VECTOR_TESTS "Enable build of tests" OFF)
 option(ZTD_FIXED_VECTOR_EXAMPLES "Enable build of examples" OFF)
 option(ZTD_FIXED_VECTOR_BENCHMARKS "Enable build of benchmarks" OFF)
 
-set(ztd.fixed_vector.sources
-	"include/phd/fixed_vector/fixed_vector.hpp"
-
-	"include/phd/fixed_vector/detail/type_traits.hpp"
-	"include/phd/fixed_vector/detail/uninit.hpp"
-	"include/phd/fixed_vector/detail/wrap_pointer.hpp"
+file(GLOB_RECURSE ztd.fixed_vector.sources
+	LIST_DIRECTORIES FALSE
+	CONFIGURE_DEPENDS
+	include/ztd/**.*
 )
 
 add_library(ztd.fixed_vector INTERFACE)
