@@ -13,10 +13,20 @@
 
 #pragma once
 
-#ifndef ZTD_FIXED_VECTOR_HPP
-#define ZTD_FIXED_VECTOR_HPP
+#ifndef ZTD_FIXED_VECTOR_FORWARD_HPP
+#define ZTD_FIXED_VECTOR_FORWARD_HPP
 
 #include <ztd/fixed_vector/version.hpp>
-#include <ztd/fixed_vector/fixed_vector.hpp>
 
-#endif // ZTD_FIXED_VECTOR_HPP
+#include <cstddef>
+
+namespace ztd {
+	ZTD_FIXED_VECTOR_INLINE_ABI_NAMESPACE_OPEN_I_
+
+	template <typename, ::std::size_t>
+	class fixed_vector;
+
+	ZTD_FIXED_VECTOR_INLINE_ABI_NAMESPACE_CLOSE_I_
+} // namespace ztd
+
+#endif // ZTD_FIXED_VECTOR_FORWARD_HPP

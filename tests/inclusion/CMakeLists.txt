@@ -20,13 +20,19 @@ file(GLOB_RECURSE ztd.fixed_vector.tests.inclusion.sources
 )
 
 add_executable(ztd.fixed_vector.tests.inclusion ${ztd.fixed_vector.tests.inclusion.sources})
-if (MSVC)
-	target_compile_options(ztd.fixed_vector.tests.inclusion
-		PRIVATE /std:c++latest /permissive-)
-else()
-	target_compile_options(ztd.fixed_vector.tests.inclusion
-		PRIVATE -std=c++2a -Wall -Werror -Wpedantic)
-endif()
+target_compile_options(ztd.fixed_vector.tests.inclusion
+	PRIVATE
+	${--utf8-literal-encoding}
+	${--utf8-source-encoding}
+	${--disable-permissive}
+	${--warn-pedantic}
+	${--warn-all}
+	${--warn-extra}
+	${--warn-errors}
+	${--template-debugging-mode}
+	${--extra-constexpr-depth}
+	${--extra-constexpr-steps}
+)
 target_link_libraries(ztd.fixed_vector.tests.inclusion
 	PRIVATE
 	ztd::fixed_vector

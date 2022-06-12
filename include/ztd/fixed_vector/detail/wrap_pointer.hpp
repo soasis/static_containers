@@ -1,15 +1,15 @@
-//   -----------------
-// | ztd::fixed_vector |
-//   -----------------
-
-// Written 2019 - 2021 by ThePhD <phdofthehouse@gmail.com>
-
+// =============================================================================
+// ztd::fixed_vector
+//
+// Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
+//
 // To the extent possible under law, the author(s) have dedicated all copyright and related
 // and neighboring rights to this software to the public domain worldwide. This software is
 // distributed without any warranty.
 
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+// ============================================================================ //
 
 #pragma once
 
@@ -18,8 +18,8 @@
 
 #include <ztd/fixed_vector/version.hpp>
 
-#include <ztd/fixed_vector/detail/type_traits.hpp>
-#include <ztd/fixed_vector/detail/memory.hpp>
+#include <ztd/idk/type_traits.hpp>
+#include <ztd/idk/to_address.hpp>
 
 #include <utility>
 #include <iterator>
@@ -38,11 +38,11 @@ namespace ztd {
 		using __is_unwrappable_ptr_value_test = decltype(__unwrap_iterator_value(::std::declval<_Type>()));
 
 		template <typename _Type>
-		inline constexpr bool __is_unwrappable_value_v = __is_detected_v<__is_unwrappable_value_test, _Type>;
+		inline constexpr bool __is_unwrappable_value_v = ztd::is_detected_v<__is_unwrappable_value_test, _Type>;
 
 		template <typename _Type>
 		inline constexpr bool __is_unwrappable_iterator_value_v
-		     = __is_detected_v<__is_unwrappable_ptr_value_test, _Type>;
+		     = ztd::is_detected_v<__is_unwrappable_ptr_value_test, _Type>;
 
 		template <typename _Type>
 		constexpr decltype(auto) __unwrap(_Type&& __value) noexcept {
@@ -74,7 +74,7 @@ namespace ztd {
 
 		public:
 			using iterator_category = __contiguous_iterator_tag;
-			using value_type        = ::std::remove_cvref_t<__unwrapped_type>;
+			using value_type        = ::ztd::remove_cvref_t<__unwrapped_type>;
 			using element_type      = ::std::remove_reference_t<__unwrapped_type>;
 			using reference         = ::std::add_lvalue_reference_t<__unwrapped_type>;
 			using pointer           = ::std::add_pointer_t<element_type>;
@@ -84,10 +84,10 @@ namespace ztd {
 			}
 			constexpr __wrap_pointer(pointer __ptr) : _M_ptr(__ptr) {
 			}
-			constexpr __wrap_pointer(const __wrap_pointer&) = default;
-			constexpr __wrap_pointer(__wrap_pointer&&)      = default;
+			constexpr __wrap_pointer(const __wrap_pointer&)            = default;
+			constexpr __wrap_pointer(__wrap_pointer&&)                 = default;
 			constexpr __wrap_pointer& operator=(const __wrap_pointer&) = default;
-			constexpr __wrap_pointer& operator=(__wrap_pointer&&) = default;
+			constexpr __wrap_pointer& operator=(__wrap_pointer&&)      = default;
 
 			constexpr explicit operator bool() const noexcept {
 				return this->_M_ptr != nullptr;
@@ -207,13 +207,13 @@ namespace std {
 		using element_type    = typename ::ztd::__fv_detail::__wrap_pointer<_Type>::element_type;
 		using difference_type = typename ::ztd::__fv_detail::__wrap_pointer<_Type>::difference_type;
 
-		static constexpr pointer pointer_to(element_type& __element) noexcept {
-			return ::std::addressof(__element);
+		static constexpr pointer pointer_to(element_type& __iter) noexcept {
+			return ::std::addressof(__iter);
 		}
 
-		static constexpr pointer to_address(const ::ztd::__fv_detail::__wrap_pointer<_Type>& __element) noexcept(
-		     ::ztd::__fv_detail::__adl::__adl_to_address(__element)) {
-			return ::ztd::__fv_detail::__adl::__adl_to_address(__element);
+		static constexpr pointer to_address(const ::ztd::__fv_detail::__wrap_pointer<_Type>& __iter) noexcept(
+		     ::ztd::idk_adl::adl_to_address(__iter)) {
+			return ::ztd::idk_adl::adl_to_address(__iter);
 		}
 	};
 

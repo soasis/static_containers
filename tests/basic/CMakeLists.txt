@@ -24,13 +24,20 @@ add_executable(ztd.fixed_vector.tests.basic ${ztd.fixed_vector.tests.basic.sourc
 target_compile_definitions(ztd.fixed_vector.tests.basic
 	PRIVATE
 )
-if (MSVC)
-	target_compile_options(ztd.fixed_vector.tests.basic
-		PRIVATE /std:c++latest /utf-8 /permissive-)
-else()
-	target_compile_options(ztd.fixed_vector.tests.basic
-		PRIVATE -std=c++2a -Wall -Werror -Wpedantic -fexec-charset=UTF-8)
-endif()
+target_compile_options(ztd.fixed_vector.tests.basic
+	PRIVATE
+	${--utf8-literal-encoding}
+	${--utf8-source-encoding}
+	${--disable-permissive}
+	${--warn-pedantic}
+	${--warn-all}
+	${--warn-extra}
+	${--warn-errors}
+	${--template-debugging-mode}
+	${--extra-constexpr-depth}
+	${--extra-constexpr-steps}
+	${--allow-zero-variadic-macro-arguments}
+)
 target_link_libraries(ztd.fixed_vector.tests.basic
 	PRIVATE
 	ztd::fixed_vector
