@@ -136,6 +136,25 @@ target_include_directories(ztd.fixed_vector INTERFACE
 	$<INSTALL_INTERFACE:include>
 )
 
+install(DIRECTORY include/
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+# # Config / Version packaging
+# Version configurations
+configure_package_config_file(
+	cmake/ztd.fixed_vector-config.cmake.in
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.fixed_vector/ztd.fixed_vector-config.cmake"
+	INSTALL_DESTINATION lib/cmake/ztd.fixed_vector
+	NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+
+write_basic_package_version_file(
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.fixed_vector/ztd.fixed_vector-config-version.cmake"
+	COMPATIBILITY SameMajorVersion)
+
+export(TARGETS ztd.fixed_vector
+	FILE
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.fixed_vector/ztd.fixed_vector-targets.cmake")
+
 # # Benchmarks, Tests, Examples
 if (ZTD_FIXED_VECTOR_TESTS)
 	enable_testing()
