@@ -243,7 +243,7 @@ namespace ztd {
 		}
 
 		reference push_back(const value_type&) noexcept {
-			a ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
