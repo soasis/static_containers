@@ -219,8 +219,8 @@ namespace ztd {
 		using const_reference                                       = ::std::add_lvalue_reference_t<const _Ty>;
 		using pointer                                               = ::std::add_pointer_t<_Ty>;
 		using const_pointer                                         = ::std::add_pointer_t<const _Ty>;
-		using iterator                                              = __fv_detail::__wrap_pointer<_Ty>;
-		using const_iterator                                        = __fv_detail::__wrap_pointer<const _Ty>;
+		using iterator                                              = ::ztd::ranges::wrapped_pointer<_Ty>;
+		using const_iterator                                        = ::ztd::ranges::wrapped_pointer<const _Ty>;
 		using size_type                                             = ::std::size_t;
 		using difference_type                                       = ::std::ptrdiff_t;
 		inline static constexpr const ::std::size_t inline_capacity = 0;

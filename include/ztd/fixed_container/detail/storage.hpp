@@ -19,9 +19,9 @@
 #include <ztd/fixed_container/version.hpp>
 
 #include <ztd/fixed_container/forward.hpp>
-#include <ztd/fixed_container/detail/uninit.hpp>
 
 #include <ztd/idk/type_traits.hpp>
+#include <ztd/idk/uninit.hpp>
 
 #include <cstddef>
 #include <climits>
@@ -60,7 +60,7 @@ namespace ztd {
 			friend class ::ztd::fixed_basic_string;
 
 			using __value_type   = _Ty;
-			using __storage_type = __fv_detail::__uninit<__value_type>;
+			using __storage_type = ztd::uninit<__value_type>;
 
 			struct __size_first {
 				__optimal_storage_type_t<_Capacity> _M_size;
@@ -90,20 +90,20 @@ namespace ztd {
 			}
 
 			constexpr ::std::add_pointer_t<__value_type> _M_data(::std::size_t __index) noexcept {
-				return ::std::addressof((this->_M_layout._M_elements + __index)->_M_value);
+				return ::std::addressof((this->_M_layout._M_elements + __index)->value);
 			}
 
 			constexpr ::std::add_pointer_t<::std::add_const_t<__value_type>> _M_data(
 			     ::std::size_t __index) const noexcept {
-				return ::std::addressof((this->_M_layout._M_elements + __index)->_M_value);
+				return ::std::addressof((this->_M_layout._M_elements + __index)->value);
 			}
 
 			::std::add_pointer_t<__value_type> data() noexcept {
-				return ::std::addressof((this->_M_layout._M_elements + 0)->_M_value);
+				return ::std::addressof((this->_M_layout._M_elements + 0)->value);
 			}
 
 			::std::add_pointer_t<::std::add_const_t<__value_type>> data() const noexcept {
-				return ::std::addressof((this->_M_layout._M_elements + 0)->_M_value);
+				return ::std::addressof((this->_M_layout._M_elements + 0)->value);
 			}
 
 			~__storage() {

@@ -19,12 +19,12 @@
 #include <ztd/fixed_container/version.hpp>
 
 #include <ztd/fixed_container/forward.hpp>
-#include <ztd/fixed_container/detail/uninit.hpp>
-#include <ztd/fixed_container/detail/wrap_pointer.hpp>
 #include <ztd/fixed_container/detail/storage.hpp>
+
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/to_address.hpp>
 #include <ztd/idk/assert.hpp>
+#include <ztd/ranges/wrapped_pointer.hpp>
 
 #include <cstddef>
 #include <initializer_list>
@@ -50,8 +50,8 @@ namespace ztd {
 		using const_reference        = ::std::add_lvalue_reference_t<const _Ty>;
 		using pointer                = ::std::add_pointer_t<_Ty>;
 		using const_pointer          = ::std::add_pointer_t<const _Ty>;
-		using iterator               = __fv_detail::__wrap_pointer<typename __base_storage::__storage_type>;
-		using const_iterator         = __fv_detail::__wrap_pointer<const typename __base_storage::__storage_type>;
+		using iterator               = ::ztd::ranges::wrapped_pointer<typename __base_storage::__storage_type>;
+		using const_iterator         = ::ztd::ranges::wrapped_pointer<const typename __base_storage::__storage_type>;
 		using reverse_iterator       = ::std::reverse_iterator<iterator>;
 		using const_reverse_iterator = ::std::reverse_iterator<const_iterator>;
 		using size_type              = ::std::size_t;
@@ -252,7 +252,7 @@ namespace ztd {
 
 		constexpr void pop_back() noexcept {
 			ZTD_ASSERT(this->_M_layout._M_size > 0);
-			this->_M_data(this->_M_layout._M_size - 1)._M_value.~value_type();
+			this->_M_data(this->_M_layout._M_size - 1).value.~value_type();
 			--this->_M_layout._M_size;
 		}
 
@@ -468,8 +468,8 @@ namespace ztd {
 		using const_reference                                       = ::std::add_lvalue_reference_t<const _Ty>;
 		using pointer                                               = ::std::add_pointer_t<_Ty>;
 		using const_pointer                                         = ::std::add_pointer_t<const _Ty>;
-		using iterator                                              = __fv_detail::__wrap_pointer<_Ty>;
-		using const_iterator                                        = __fv_detail::__wrap_pointer<_Ty>;
+		using iterator                                              = ::ztd::ranges::wrapped_pointer<_Ty>;
+		using const_iterator                                        = ::ztd::ranges::wrapped_pointer<_Ty>;
 		using size_type                                             = ::std::size_t;
 		using difference_type                                       = ::std::ptrdiff_t;
 		inline static constexpr const ::std::size_t inline_capacity = 0;
