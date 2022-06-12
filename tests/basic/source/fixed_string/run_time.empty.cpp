@@ -20,19 +20,19 @@
 #include <cstddef>
 #include <string>
 
-TEMPLATE_LIST_TEST_CASE("fixed_vector with an empty with capacity using compile-time capable scalar types",
-     "[fixed_vector][run_time][empty]", ztd::tests::scalars_list) {
+TEMPLATE_LIST_TEST_CASE("fixed_string with an empty with capacity using compile-time capable scalar types",
+     "[fixed_string][run_time][empty]", ztd::tests::scalar_types_list) {
 	constexpr std::size_t Capacity = 5;
-	ztd::fixed_vector<TestType, Capacity> vec {};
-	static_assert(vec.capacity() == Capacity);
-	auto first_it = vec.begin();
-	auto last_it  = vec.end();
-	REQUIRE(vec.capacity() == Capacity);
-	REQUIRE(vec.size() == 0);
-	REQUIRE(first_it.base() == vec.data());
-	vec.clear();
-	REQUIRE(vec.capacity() == Capacity);
-	REQUIRE(vec.size() == 0);
-	REQUIRE(first_it.base() == vec.data());
-	REQUIRE(last_it.base() == (vec.data() + vec.size()));
+	ztd::fixed_basic_string<TestType, Capacity> c {};
+	static_assert(c.capacity() == Capacity);
+	auto first_it = c.begin();
+	auto last_it  = c.end();
+	REQUIRE(c.capacity() == Capacity);
+	REQUIRE(c.size() == 0);
+	REQUIRE(first_it.base() == c.data());
+	c.clear();
+	REQUIRE(c.capacity() == Capacity);
+	REQUIRE(c.size() == 0);
+	REQUIRE(first_it.base() == c.data());
+	REQUIRE(last_it.base() == (c.data() + c.size()));
 }

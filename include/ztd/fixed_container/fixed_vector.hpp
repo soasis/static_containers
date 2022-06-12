@@ -16,10 +16,12 @@
 #ifndef ZTD_FIXED_CONTAINER_FIXED_VECTOR_HPP
 #define ZTD_FIXED_CONTAINER_FIXED_VECTOR_HPP
 
+#include <ztd/fixed_container/version.hpp>
+
+#include <ztd/fixed_container/forward.hpp>
 #include <ztd/fixed_container/detail/uninit.hpp>
 #include <ztd/fixed_container/detail/wrap_pointer.hpp>
-#include <ztd/fixed_container/forward.hpp>
-
+#include <ztd/fixed_container/detail/storage.hpp>
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/to_address.hpp>
 #include <ztd/idk/assert.hpp>
@@ -34,131 +36,12 @@
 namespace ztd {
 	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __fv_detail {
-		template <typename _Ty, ::std::size_t _Capacity, bool = ::std::is_trivial_v<_Ty>>
-		class __storage {
-		private:
-			template <typename _TyF, ::std::size_t _CapacityF>
-			friend class ::ztd::fixed_vector;
-
-			using __value_type   = _Ty;
-			using __storage_type = __fv_detail::__uninit<__value_type>;
-
-		public:
-			constexpr __storage() noexcept : _M_size(), _M_elements() {
-			}
-
-			constexpr ::std::add_pointer_t<__storage_type> _M_storage_data_at(::std::size_t __index) noexcept {
-				return ::std::addressof(this->_M_elements[__index]);
-			}
-
-			constexpr ::std::add_pointer_t<::std::add_const_t<__storage_type>> _M_storage_data_at(
-			     ::std::size_t __index) const noexcept {
-				return (this->_M_elements + __index);
-			}
-
-			constexpr ::std::add_pointer_t<__value_type> _M_data(::std::size_t __index) noexcept {
-				return ::std::addressof((this->_M_elements + __index)->_M_value);
-			}
-
-			constexpr ::std::add_pointer_t<::std::add_const_t<__value_type>> _M_data(
-			     ::std::size_t __index) const noexcept {
-				return ::std::addressof((this->_M_elements + __index)->_M_value);
-			}
-
-			::std::add_pointer_t<__value_type> data() noexcept {
-				return ::std::addressof((this->_M_elements + 0)->_M_value);
-			}
-
-			::std::add_pointer_t<::std::add_const_t<__value_type>> data() const noexcept {
-				return ::std::addressof((this->_M_elements + 0)->_M_value);
-			}
-
-			~__storage() {
-				this->_M_destroy_all();
-			}
-
-		private:
-			::std::size_t _M_size;
-			__storage_type _M_elements[_Capacity];
-
-			constexpr void _M_destroy_all() noexcept {
-				if constexpr (::std::is_nothrow_destructible_v<_Ty>) {
-					for (::std::size_t __index = this->_M_size; __index-- > 0;) {
-						this->_M_data(__index)->~__value_type();
-					}
-					this->_M_size = 0;
-				}
-				else {
-					for (::std::size_t __index = this->_M_size; __index-- > 0;) {
-						this->_M_data(__index)->~__value_type();
-						this->_M_size -= 1;
-					}
-				}
-			}
-		};
-
-		template <typename _Ty, ::std::size_t _Capacity>
-		class __storage<_Ty, _Capacity, true> {
-		private:
-			template <typename _TyF, ::std::size_t _CapacityF>
-			friend class ::ztd::fixed_vector;
-			using __value_type   = _Ty;
-			using __storage_type = __value_type;
-
-		public:
-			constexpr __storage() noexcept : _M_size(), _M_elements() {
-			}
-
-			constexpr ::std::add_pointer_t<__storage_type> _M_storage_data_at(::std::size_t __index) noexcept {
-				return this->_M_elements + __index;
-			}
-
-			constexpr ::std::add_pointer_t<::std::add_const_t<__storage_type>> _M_storage_data_at(
-			     ::std::size_t __index) const noexcept {
-				return this->_M_elements + __index;
-			}
-
-			constexpr ::std::add_pointer_t<_Ty> _M_data(::std::size_t __index) noexcept {
-				return this->_M_elements + __index;
-			}
-
-			constexpr ::std::add_pointer_t<::std::add_const_t<_Ty>> _M_data(::std::size_t __index) const noexcept {
-				return this->_M_elements + __index;
-			}
-
-			constexpr ::std::add_pointer_t<_Ty> data() noexcept {
-				return this->_M_elements + 0;
-			}
-
-			constexpr ::std::add_pointer_t<::std::add_const_t<_Ty>> data() const noexcept {
-				return this->_M_elements + 0;
-			}
-
-		private:
-			::std::size_t _M_size;
-			__storage_type _M_elements[_Capacity];
-
-			constexpr void _M_destroy_all() noexcept {
-				if constexpr (::std::is_nothrow_destructible_v<_Ty>) {
-					for (::std::size_t __index = this->_M_size; __index-- > 0;) {
-						this->_M_data(__index)->~__value_type();
-					}
-					this->_M_size = 0;
-				}
-				else {
-					for (::std::size_t __index = this->_M_size; __index-- > 0;) {
-						this->_M_data(__index)->~__value_type();
-						this->_M_size -= 1;
-					}
-				}
-			}
-		};
-	} // namespace __fv_detail
-
 	template <typename _Ty, ::std::size_t _Capacity>
 	class fixed_vector : private __fv_detail::__storage<_Ty, _Capacity> {
 	private:
+		template <typename, ::std::size_t>
+		friend class ::ztd::fixed_basic_string;
+
 		using __base_storage = __fv_detail::__storage<_Ty, _Capacity>;
 
 	public:
@@ -188,43 +71,63 @@ namespace ztd {
 		}
 
 		constexpr fixed_vector(size_type __count) noexcept : __base_storage() {
-			this->insert(this->cend(), __count, value_type {});
+			this->insert(this->cend(), __count);
+		}
+
+		constexpr fixed_vector(size_type __count, const value_type& __value) noexcept : __base_storage() {
+			this->insert(this->cend(), __count, __value);
+		}
+
+		template <typename _First, typename _Last,
+		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf-hack
+		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
+		          >* = nullptr>
+		constexpr fixed_vector(_First __first, _Last __last) noexcept : __base_storage() {
+			this->insert(this->cend(), ::std::move(__first), ::std::move(__last));
 		}
 
 		template <typename... _Args>
-		constexpr void emplace_back(_Args&&... __args) noexcept(
+		constexpr reference emplace_back(_Args&&... __args) noexcept(
 		     ::std::is_nothrow_constructible_v<value_type, _Args...>) {
-			__alloc __al;
-			__alloc_traits::construct(__al, this->_M_data(this->_M_size), ::std::forward<_Args>(__args)...);
-			++this->_M_size;
+			__alloc __al {};
+			auto* __target_ptr = this->_M_data(this->_M_layout._M_size);
+			__alloc_traits::construct(__al, __target_ptr, ::std::forward<_Args>(__args)...);
+			++this->_M_layout._M_size;
+			return *__target_ptr;
 		}
 
-		constexpr void push_back(const value_type& __value) noexcept(
+		constexpr reference push_back(const value_type& __value) noexcept(
 		     ::std::is_nothrow_copy_constructible_v<value_type>) {
-			__alloc __al;
-			__alloc_traits::construct(__al, this->_M_data(this->_M_size), __value);
-			++this->_M_size;
+			__alloc __al {};
+			auto* __target_ptr = this->_M_data(this->_M_layout._M_size);
+			__alloc_traits::construct(__al, __target_ptr, __value);
+			++this->_M_layout._M_size;
+			return *__target_ptr;
 		}
 
-		constexpr void push_back(value_type&& __value) noexcept(::std::is_nothrow_move_constructible_v<value_type>) {
-			__alloc __al;
-			__alloc_traits::construct(__al, this->_M_data(this->_M_size), ::std::move(__value));
-			++this->_M_size;
+		constexpr reference push_back(value_type&& __value) noexcept(
+		     ::std::is_nothrow_move_constructible_v<value_type>) {
+			__alloc __al {};
+			auto* __target_ptr = this->_M_data(this->_M_layout._M_size);
+			__alloc_traits::construct(__al, __target_ptr, ::std::move(__value));
+			++this->_M_layout._M_size;
+			return *__target_ptr;
 		}
 
 		template <typename... _Args>
-		constexpr void emplace_front(_Args&&... __args) noexcept(
+		constexpr reference emplace_front(_Args&&... __args) noexcept(
 		     ::std::is_nothrow_constructible_v<value_type, _Args...>) {
-			this->emplace(this->cbegin(), ::std::forward<_Args>(__args)...);
+			*this->emplace(this->cbegin(), ::std::forward<_Args>(__args)...);
 		}
 
-		constexpr void push_front(const value_type& __value) noexcept(
+		constexpr reference push_front(const value_type& __value) noexcept(
 		     ::std::is_nothrow_copy_constructible_v<value_type>) {
-			this->insert(this->cbegin(), __value);
+			*this->insert(this->cbegin(), __value);
 		}
 
-		constexpr void push_front(value_type&& __value) noexcept(::std::is_nothrow_move_constructible_v<value_type>) {
-			this->insert(this->cbegin(), ::std::move(__value));
+		constexpr reference push_front(value_type&& __value) noexcept(
+		     ::std::is_nothrow_move_constructible_v<value_type>) {
+			*this->insert(this->cbegin(), ::std::move(__value));
 		}
 
 		template <typename... _Args>
@@ -236,8 +139,8 @@ namespace ztd {
 				this->emplace_back(::std::forward<_Args>(__args)...);
 			}
 			difference_type __where_dist = __where - this->cbegin();
-			assert(__where_dist < this->size());
-			__alloc __al;
+			ZTD_ASSERT(__where_dist < this->size());
+			__alloc __al {};
 
 			iterator __where_first(const_cast<pointer>(__where.base()));
 			iterator __where_p      = __where_first - 2;
@@ -286,26 +189,26 @@ namespace ztd {
 				return iterator(const_cast<pointer>(__where.base()));
 			}
 			difference_type __where_dist = __where - this->begin();
-			assert(__where_dist < this->size());
-			assert(static_cast<size_type>(__count + __where_dist) <= this->capacity());
+			ZTD_ASSERT(__where_dist < this->size());
+			ZTD_ASSERT(static_cast<size_type>(__count + __where_dist) <= this->capacity());
 			return this->_M_unchecked_multi_insert_count(::std::move(__where), __where_dist, __count, __value);
 		}
 
 		template <typename _First, typename _Last,
-		     ::std::enable_if_t<
-		          !::std::is_integral_v<
-		               _First> && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type>>* = nullptr>
+		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf-hack
+		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
+		          >* = nullptr>
 		constexpr iterator insert(const_iterator __where, _First __first, _Last __last) {
 			if (__first == __last) {
 				return iterator(const_cast<pointer>(__where.base()));
 			}
 			difference_type __where_dist = __where.base() - this->begin();
-			assert(__where_dist < this->size());
+			ZTD_ASSERT(__where_dist < this->size());
 			// FIXME: lazy dependent-false
 			// idiom-check iterators
 			if constexpr (::std::is_void_v<value_type>) {
 				auto __fl_dist = __last - __first;
-				assert(static_cast<size_type>(__fl_dist + __where_dist) <= this->capacity());
+				ZTD_ASSERT(static_cast<size_type>(__fl_dist + __where_dist) <= this->capacity());
 				return this->_M_unchecked_multi_insert_random_access(
 				     ::std::move(__where), __where_dist, ::std::move(__first), ::std::move(__last));
 			}
@@ -322,8 +225,8 @@ namespace ztd {
 
 		constexpr iterator erase(const_iterator __where) noexcept {
 			difference_type __where_dist = __where - this->begin();
-			assert(__where_dist < this->_M_size);
-			if (__where_dist == this->_M_size) {
+			ZTD_ASSERT(__where_dist < this->_M_layout._M_size);
+			if (__where_dist == this->_M_layout._M_size) {
 				return iterator(const_cast<pointer>(::std::move(__where).base()));
 			}
 			if (__where_dist == 0) {
@@ -338,7 +241,7 @@ namespace ztd {
 				return iterator(const_cast<pointer>(::std::move(__where_first).base()));
 			}
 			difference_type __where_diff = __where_last - __where_first;
-			assert(__where_diff < this->_M_size);
+			ZTD_ASSERT(__where_diff < this->_M_size);
 			if (__where_diff == this->size()) {
 				this->clear();
 				return this->begin();
@@ -348,38 +251,38 @@ namespace ztd {
 		}
 
 		constexpr void pop_back() noexcept {
-			assert(this->_M_size > 0);
-			this->_M_data(this->_M_size - 1)._M_value.~value_type();
-			--this->_M_size;
+			ZTD_ASSERT(this->_M_layout._M_size > 0);
+			this->_M_data(this->_M_layout._M_size - 1)._M_value.~value_type();
+			--this->_M_layout._M_size;
 		}
 
 		constexpr void pop_front() noexcept {
-			assert(this->_M_size != 0);
+			ZTD_ASSERT(this->_M_layout._M_size != 0);
 			this->_M_unchecked_erase(this->begin());
 		}
 
 		constexpr reference front() noexcept {
-			assert(this->_M_size > 0);
+			ZTD_ASSERT(this->_M_layout._M_size > 0);
 			return *this->_M_data(0);
 		}
 
 		constexpr const_reference front() const noexcept {
-			assert(this->_M_size > 0);
+			ZTD_ASSERT(this->_M_layout._M_size > 0);
 			return *this->_M_data(0);
 		}
 
 		constexpr reference back() noexcept {
-			assert(this->_M_size > 0);
+			ZTD_ASSERT(this->_M_layout._M_size > 0);
 			return *this->_M_data(this->_M_size - 1);
 		}
 
 		constexpr const_reference back() const noexcept {
-			assert(this->_M_size > 0);
-			return *this->_M_data(this->_M_size - 1);
+			ZTD_ASSERT(this->_M_layout._M_size > 0);
+			return *this->_M_data(this->_M_layout._M_size - 1);
 		}
 
 		constexpr bool empty() const noexcept {
-			return this->_M_size == 0;
+			return this->_M_layout._M_size == 0;
 		}
 
 		constexpr void clear() noexcept {
@@ -387,7 +290,7 @@ namespace ztd {
 		}
 
 		constexpr size_type size() const noexcept {
-			return this->_M_size;
+			return this->_M_layout._M_size;
 		}
 
 		constexpr size_type capacity() const noexcept {
@@ -413,15 +316,15 @@ namespace ztd {
 		}
 
 		constexpr iterator end() noexcept {
-			return iterator(this->_M_storage_data_at(this->_M_size));
+			return iterator(this->_M_storage_data_at(this->_M_layout._M_size));
 		}
 
 		constexpr const_iterator end() const noexcept {
-			return const_iterator(this->_M_storage_data_at(this->_M_size));
+			return const_iterator(this->_M_storage_data_at(this->_M_layout._M_size));
 		}
 
 		constexpr const_iterator cend() const noexcept {
-			return const_iterator(this->_M_storage_data_at(this->_M_size));
+			return const_iterator(this->_M_storage_data_at(this->_M_layout._M_size));
 		}
 
 		constexpr reverse_iterator rbegin() noexcept {
@@ -508,7 +411,7 @@ namespace ztd {
 				}
 			}
 			__where_last->~value_type();
-			--this->_M_size;
+			--this->_M_layout._M_size;
 			return __where_first;
 		}
 
@@ -548,13 +451,17 @@ namespace ztd {
 					break;
 				}
 			}
-			--this->_M_size;
+			--this->_M_layout._M_size;
 			return __where_first;
 		}
 	};
 
 	template <typename _Ty>
 	class fixed_vector<_Ty, 0> {
+	private:
+		template <typename, ::std::size_t>
+		friend class ::ztd::fixed_basic_string;
+
 	public:
 		using value_type                                            = _Ty;
 		using reference                                             = ::std::add_lvalue_reference_t<_Ty>;
@@ -567,58 +474,77 @@ namespace ztd {
 		using difference_type                                       = ::std::ptrdiff_t;
 		inline static constexpr const ::std::size_t inline_capacity = 0;
 
-	public:
 		constexpr fixed_vector() noexcept {
 		}
 
-		constexpr fixed_vector(::std::initializer_list<value_type>) noexcept {
+		constexpr fixed_vector(::std::initializer_list<value_type> __values) noexcept {
+			ZTD_ASSERT_MESSAGE("there must be no values", __values.size() < size_type(1));
 		}
 
-		constexpr fixed_vector(size_type) noexcept {
-		}
-
-		template <typename... _Args>
-		void emplace_back(_Args&&...) noexcept {
-		}
-
-		void push_back(const value_type&) noexcept {
-		}
-
-		void push_back(value_type&&) noexcept {
+		constexpr fixed_vector(size_type __count) noexcept {
+			ZTD_ASSERT_MESSAGE("there must be no values", __count < size_type(1));
 		}
 
 		template <typename... _Args>
-		void emplace_front(_Args&&...) noexcept {
+		reference emplace_back(_Args&&...) noexcept {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			return *static_cast<pointer>(nullptr);
 		}
 
-		void push_front(const value_type&) noexcept {
+		reference push_back(const value_type&) noexcept {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			return *static_cast<pointer>(nullptr);
 		}
 
-		void push_front(value_type&&) noexcept {
+		reference push_back(value_type&&) noexcept {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			return *static_cast<pointer>(nullptr);
+		}
+
+		template <typename... _Args>
+		reference emplace_front(_Args&&...) noexcept {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			return *static_cast<pointer>(nullptr);
+		}
+
+		reference push_front(const value_type&) noexcept {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			return *static_cast<pointer>(nullptr);
+		}
+
+		reference push_front(value_type&&) noexcept {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			return *static_cast<pointer>(nullptr);
 		}
 
 		template <typename... _Args>
 		iterator emplace(const_iterator, _Args&&...) noexcept {
+			ZTD_ASSERT_MESSAGE("nothing can be emplaced in this fixed_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, value_type&&) noexcept {
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, const value_type&) noexcept {
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, ::std::initializer_list<value_type>) noexcept {
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, size_type) noexcept {
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, size_type, const value_type&) noexcept {
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_vector", false);
 			return iterator(nullptr);
 		}
 
@@ -627,36 +553,45 @@ namespace ztd {
 		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
 		          >* = nullptr>
 		constexpr iterator insert(const_iterator, _First, _Last) {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
 			return iterator(nullptr);
 		}
 
-		constexpr iterator erase() noexcept {
+		constexpr iterator erase(const_iterator) noexcept {
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator erase(const_iterator, const_iterator) noexcept {
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr void pop_back() noexcept {
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_vector", false);
 		}
 
 		constexpr void pop_front() noexcept {
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_vector", false);
 		}
 
 		constexpr reference front() noexcept {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		constexpr const_reference front() const noexcept {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
 			return *static_cast<const_pointer>(nullptr);
 		}
 
 		constexpr reference back() noexcept {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		constexpr const_reference back() const noexcept {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
 			return *static_cast<const_pointer>(nullptr);
 		}
 
@@ -712,17 +647,23 @@ namespace ztd {
 		}
 
 		constexpr reference operator[](size_type) {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		constexpr const_reference operator[](size_type) const {
+			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
 			return *static_cast<const_pointer>(nullptr);
 		}
 
-		constexpr void resize(size_type) noexcept {
+		constexpr void resize(size_type __count) noexcept {
+			ZTD_ASSERT_MESSAGE(
+			     "there is no capacity in this fixed_vector to resize to anything but 0", __count < size_type(1));
 		}
 
-		constexpr void resize(size_type, const value_type&) noexcept {
+		constexpr void resize(size_type __count, const value_type&) noexcept {
+			ZTD_ASSERT_MESSAGE(
+			     "there is no capacity in this fixed_vector to resize to anything but 0", __count < size_type(1));
 		}
 	};
 

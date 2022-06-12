@@ -13,23 +13,35 @@
 
 #pragma once
 
-#ifndef ZTD_FIXED_CONTAINER_FORWARD_HPP
-#define ZTD_FIXED_CONTAINER_FORWARD_HPP
+#ifndef ZTD_FIXED_CONTAINER_FIXED_STRING_HPP
+#define ZTD_FIXED_CONTAINER_FIXED_STRING_HPP
 
 #include <ztd/fixed_container/version.hpp>
 
-#include <cstddef>
+#include <ztd/fixed_container/fixed_basic_string.hpp>
+
+#include <ztd/idk/charN_t.hpp>
 
 namespace ztd {
 	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	template <typename, ::std::size_t>
-	class fixed_vector;
+	template <::std::size_t _Capacity>
+	using fixed_string = ::ztd::fixed_basic_string<char, _Capacity>;
 
-	template <typename, ::std::size_t>
-	class fixed_basic_string;
+	template <::std::size_t _Capacity>
+	using fixed_wstring = ::ztd::fixed_basic_string<::ztd::uwchar_t, _Capacity>;
+
+	template <::std::size_t _Capacity>
+	using fixed_u8string = ::ztd::fixed_basic_string<::ztd::uchar8_t, _Capacity>;
+
+	template <::std::size_t _Capacity>
+	using fixed_u16string = ::ztd::fixed_basic_string<::ztd::uchar16_t, _Capacity>;
+
+	template <::std::size_t _Capacity>
+	using fixed_u32string = ::ztd::fixed_basic_string<::ztd::uchar32_t, _Capacity>;
 
 	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_CLOSE_I_
+
 } // namespace ztd
 
-#endif // ZTD_FIXED_CONTAINER_FORWARD_HPP
+#endif // ZTD_FIXED_CONTAINER_FIXED_STRING_HPP

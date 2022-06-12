@@ -11,13 +11,4 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 // ============================================================================ //
 
-#pragma once
-
-#ifndef ZTD_FIXED_CONTAINER_HPP
-#define ZTD_FIXED_CONTAINER_HPP
-
-#include <ztd/fixed_container/version.hpp>
-#include <ztd/fixed_container/fixed_vector.hpp>
-#include <ztd/fixed_container/fixed_string.hpp>
-
-#endif // ZTD_FIXED_CONTAINER_HPP
+#include <ztd/fixed_container/detail/storage.hpp>
