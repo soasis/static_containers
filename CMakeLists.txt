@@ -1,8 +1,8 @@
 # ============================================================================
 #
-# ztd.fixed_vector
+# ztd.fixed_container
 #
-# Written 2019 - 2021 by ThePhD <phdofthehouse@gmail.com>
+# Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 #
 # To the extent possible under law, the author(s) have dedicated all copyright and related
 # and neighboring rights to this software to the public domain worldwide. This software is
@@ -28,13 +28,13 @@ set(CMAKE_PROJECT_INCLUDE ${ZTD_CMAKE_PROJECT_PRELUDE})
 # # Project declaration
 # informs about the project, gives a description, version and MOST IMPORTANTLY
 # the languages the project is going to use. Required.
-project(ztd.fixed_vector
+project(ztd.fixed_container
 	VERSION 0.5.0
 	DESCRIPTION "A library for a fixed-capacity vector."
 	LANGUAGES C CXX)
 
 
-if (ZTD_FIXED_VECTOR_READTHEDOCS)
+if (ZTD_FIXED_CONTAINER_READTHEDOCS)
 	# ReadTheDocs seems unable to handle the include at the project level: something must be going wrong?
 	include(CheckCXXCompilerFlag)
 	include(CheckCCompilerFlag)
@@ -57,13 +57,13 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # # # Top-Level Directories
 # Check if this is the top-level project or not
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-	set(ZTD_FIXED_VECTOR_IS_TOP_LEVEL_PROJECT YES)
+	set(ZTD_FIXED_CONTAINER_IS_TOP_LEVEL_PROJECT YES)
 else()
-	set(ZTD_FIXED_VECTOR_IS_TOP_LEVEL_PROJECT NO)
+	set(ZTD_FIXED_CONTAINER_IS_TOP_LEVEL_PROJECT NO)
 endif()
 
 # Modify bad flags / change defaults if we are the top level
-if (ZTD_FIXED_VECTOR_IS_TOP_LEVEL_PROJECT)
+if (ZTD_FIXED_CONTAINER_IS_TOP_LEVEL_PROJECT)
 	if (CMAKE_SIZEOF_VOID_P EQUAL 4)
 		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CMAKE_BUILD_TYPE}/lib")
 		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CMAKE_BUILD_TYPE}/bin")
@@ -82,7 +82,7 @@ if (ZTD_FIXED_VECTOR_IS_TOP_LEVEL_PROJECT)
 		set(CMAKE_C_STANDARD 11)
 	endif()
 
-	if (ZTD_FIXED_VECTOR_BENCHMARKS OR ZTD_FIXED_VECTOR_EXAMPLES OR ZTD_FIXED_VECTOR_TESTS OR ZTD_FIXED_VECTOR_SCRATCH)
+	if (ZTD_FIXED_CONTAINER_BENCHMARKS OR ZTD_FIXED_CONTAINER_EXAMPLES OR ZTD_FIXED_CONTAINER_TESTS OR ZTD_FIXED_CONTAINER_SCRATCH)
 		# normal flags
 		check_compiler_flag(disable-permissive MSVC /permissive- GCC -pedantic)
 		# Warning flags
@@ -105,10 +105,10 @@ include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
 # # Options
-option(ZTD_FIXED_VECTOR_CI "Whether or not we are in contiguous integration mode" OFF)
-option(ZTD_FIXED_VECTOR_TESTS "Enable build of tests" OFF)
-option(ZTD_FIXED_VECTOR_EXAMPLES "Enable build of examples" OFF)
-option(ZTD_FIXED_VECTOR_BENCHMARKS "Enable build of benchmarks" OFF)
+option(ZTD_FIXED_CONTAINER_CI "Whether or not we are in contiguous integration mode" OFF)
+option(ZTD_FIXED_CONTAINER_TESTS "Enable build of tests" OFF)
+option(ZTD_FIXED_CONTAINER_EXAMPLES "Enable build of examples" OFF)
+option(ZTD_FIXED_CONTAINER_BENCHMARKS "Enable build of benchmarks" OFF)
 
 # # Dependencies
 # ztd.idk
@@ -118,20 +118,20 @@ FetchContent_Declare(ztd.idk
 FetchContent_MakeAvailable(ztd.idk)
 
 
-file(GLOB_RECURSE ztd.fixed_vector.sources
+file(GLOB_RECURSE ztd.fixed_container.sources
 	LIST_DIRECTORIES FALSE
 	CONFIGURE_DEPENDS
 	include/ztd/**.*
 )
 
-add_library(ztd.fixed_vector INTERFACE)
-add_library(ztd::fixed_vector ALIAS ztd.fixed_vector)
-target_sources(ztd.fixed_vector INTERFACE ${ztd.fixed_vector.sources})
-target_link_libraries(ztd.fixed_vector
+add_library(ztd.fixed_container INTERFACE)
+add_library(ztd::fixed_container ALIAS ztd.fixed_container)
+target_sources(ztd.fixed_container INTERFACE ${ztd.fixed_container.sources})
+target_link_libraries(ztd.fixed_container
 	INTERFACE
 	ztd::idk
 )
-target_include_directories(ztd.fixed_vector INTERFACE 
+target_include_directories(ztd.fixed_container INTERFACE 
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
 	$<INSTALL_INTERFACE:include>
 )
@@ -142,30 +142,30 @@ install(DIRECTORY include/
 # # Config / Version packaging
 # Version configurations
 configure_package_config_file(
-	cmake/ztd.fixed_vector-config.cmake.in
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.fixed_vector/ztd.fixed_vector-config.cmake"
-	INSTALL_DESTINATION lib/cmake/ztd.fixed_vector
+	cmake/ztd.fixed_container-config.cmake.in
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.fixed_container/ztd.fixed_container-config.cmake"
+	INSTALL_DESTINATION lib/cmake/ztd.fixed_container
 	NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
 write_basic_package_version_file(
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.fixed_vector/ztd.fixed_vector-config-version.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.fixed_container/ztd.fixed_container-config-version.cmake"
 	COMPATIBILITY SameMajorVersion)
 
-export(TARGETS ztd.fixed_vector
+export(TARGETS ztd.fixed_container
 	FILE
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.fixed_vector/ztd.fixed_vector-targets.cmake")
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.fixed_container/ztd.fixed_container-targets.cmake")
 
 # # Benchmarks, Tests, Examples
-if (ZTD_FIXED_VECTOR_TESTS)
+if (ZTD_FIXED_CONTAINER_TESTS)
 	enable_testing()
 endif()
-if (ZTD_FIXED_VECTOR_TESTS)
+if (ZTD_FIXED_CONTAINER_TESTS)
 	enable_testing()
 	add_subdirectory(tests)
 endif()
-if (ZTD_FIXED_VECTOR_EXAMPLES)
+if (ZTD_FIXED_CONTAINER_EXAMPLES)
 	add_subdirectory(examples)
 endif()
-if (ZTD_FIXED_VECTOR_BENCHMARKS)
+if (ZTD_FIXED_CONTAINER_BENCHMARKS)
 	add_subdirectory(benchmarks)
 endif()

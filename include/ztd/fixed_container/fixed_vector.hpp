@@ -1,24 +1,24 @@
 // =============================================================================
-// ztd::fixed_vector
+// ztd::fixed_container
 //
 // Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 //
 // To the extent possible under law, the author(s) have dedicated all copyright and related
 // and neighboring rights to this software to the public domain worldwide. This software is
 // distributed without any warranty.
-
+//
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 // ============================================================================ //
 
 #pragma once
 
-#ifndef ZTD_FIXED_VECTOR_FIXED_VECTOR_HPP
-#define ZTD_FIXED_VECTOR_FIXED_VECTOR_HPP
+#ifndef ZTD_FIXED_CONTAINER_FIXED_VECTOR_HPP
+#define ZTD_FIXED_CONTAINER_FIXED_VECTOR_HPP
 
-#include <ztd/fixed_vector/detail/uninit.hpp>
-#include <ztd/fixed_vector/detail/wrap_pointer.hpp>
-#include <ztd/fixed_vector/forward.hpp>
+#include <ztd/fixed_container/detail/uninit.hpp>
+#include <ztd/fixed_container/detail/wrap_pointer.hpp>
+#include <ztd/fixed_container/forward.hpp>
 
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/to_address.hpp>
@@ -32,7 +32,7 @@
 #include <iterator>
 
 namespace ztd {
-	ZTD_FIXED_VECTOR_INLINE_ABI_NAMESPACE_OPEN_I_
+	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __fv_detail {
 		template <typename _Ty, ::std::size_t _Capacity, bool = ::std::is_trivial_v<_Ty>>
@@ -394,6 +394,10 @@ namespace ztd {
 			return _Capacity;
 		}
 
+		constexpr size_type max_size() const noexcept {
+			return _Capacity;
+		}
+
 		using __base_storage::data;
 
 		constexpr iterator begin() noexcept {
@@ -671,6 +675,10 @@ namespace ztd {
 			return 0;
 		}
 
+		constexpr size_type max_size() const noexcept {
+			return 0;
+		}
+
 		constexpr pointer data() noexcept {
 			return nullptr;
 		}
@@ -718,8 +726,8 @@ namespace ztd {
 		}
 	};
 
-	ZTD_FIXED_VECTOR_INLINE_ABI_NAMESPACE_CLOSE_I_
+	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_CLOSE_I_
 
 } // namespace ztd
 
-#endif // ZTD_FIXED_VECTOR_FIXED_VECTOR_HPP
+#endif // ZTD_FIXED_CONTAINER_FIXED_VECTOR_HPP

@@ -1,8 +1,8 @@
 # ============================================================================
 #
-# ztd.fixed_vector
+# ztd.fixed_container
 #
-# Written 2019 - 2021 by ThePhD <phdofthehouse@gmail.com>
+# Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 #
 # To the extent possible under law, the author(s) have dedicated all copyright and related
 # and neighboring rights to this software to the public domain worldwide. This software is
@@ -13,14 +13,14 @@
 #
 # ============================================================================
 
-file(GLOB_RECURSE ztd.fixed_vector.tests.inclusion.sources
+file(GLOB_RECURSE ztd.fixed_container.tests.inclusion.sources
 	LIST_DIRECTORIES FALSE
 	CONFIGURE_DEPENDS
 	source/*.cpp
 )
 
-add_executable(ztd.fixed_vector.tests.inclusion ${ztd.fixed_vector.tests.inclusion.sources})
-target_compile_options(ztd.fixed_vector.tests.inclusion
+add_executable(ztd.fixed_container.tests.inclusion ${ztd.fixed_container.tests.inclusion.sources})
+target_compile_options(ztd.fixed_container.tests.inclusion
 	PRIVATE
 	${--utf8-literal-encoding}
 	${--utf8-source-encoding}
@@ -33,9 +33,9 @@ target_compile_options(ztd.fixed_vector.tests.inclusion
 	${--extra-constexpr-depth}
 	${--extra-constexpr-steps}
 )
-target_link_libraries(ztd.fixed_vector.tests.inclusion
+target_link_libraries(ztd.fixed_container.tests.inclusion
 	PRIVATE
-	ztd::fixed_vector
+	ztd::fixed_container
 	${CMAKE_DL_LIBS}
 )
-add_test(NAME ztd.fixed_vector.tests.inclusion COMMAND ztd.fixed_vector.tests.inclusion)
+add_test(NAME ztd.fixed_container.tests.inclusion COMMAND ztd.fixed_container.tests.inclusion)

@@ -1,13 +1,13 @@
 @PACKAGE_INIT@
 
-if (TARGET ztd::fixed_vector)
+if (TARGET ztd::fixed_container)
 	get_target_property(ZTD_TEXT_INCLUDE_DIRS
-		ztd.fixed_vector INTERFACE_INCLUDE_DIRECTORIES)
+		ztd.fixed_container INTERFACE_INCLUDE_DIRECTORIES)
 	set_and_check(ZTD_TEXT_INCLUDE_DIRS "${ZTD_TEXT_INCLUDE_DIRS}")
 endif()
 
-if(TARGET ztd::fixed_vector::single)
+if(TARGET ztd::fixed_container::single)
 	get_target_property(ZTD_TEXT_SINGLE_INCLUDE_DIRS
-		ztd.fixed_vector.single INTERFACE_INCLUDE_DIRECTORIES)
+		ztd.fixed_container.single INTERFACE_INCLUDE_DIRECTORIES)
 	set_and_check(ZTD_TEXT_SINGLE_INCLUDE_DIRS "${ZTD_TEXT_SINGLE_INCLUDE_DIRS}")
 endif()

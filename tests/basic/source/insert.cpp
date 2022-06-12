@@ -1,5 +1,5 @@
 // =============================================================================
-// ztd::fixed_vector
+// ztd::fixed_container
 //
 // Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 //
@@ -11,14 +11,14 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 // ============================================================================ //
 
-#include <ztd/fixed_vector.hpp>
+#include <ztd/fixed_container.hpp>
 
 #include <catch2/catch_all.hpp>
 
 #include <ztd/tests/types.hpp>
 
 template <typename T, std::size_t Capacity>
-constexpr auto make_fixed_vector(std::size_t elements) {
+constexpr auto make_fixed_container(std::size_t elements) {
 	ztd::fixed_vector<T, Capacity> vec {};
 	for (std::size_t i = 0; i < elements; ++i) {
 		if constexpr (std::is_integral_v<T>) {
@@ -36,7 +36,7 @@ TEMPLATE_LIST_TEST_CASE(
 	constexpr std::size_t expected_capacity = 40;
 	constexpr std::size_t expected_size     = 5;
 
-	auto vec        = make_fixed_vector<TestType, expected_capacity>(expected_size);
+	auto vec        = make_fixed_container<TestType, expected_capacity>(expected_size);
 	auto first_it   = vec.begin();
 	auto last_it    = vec.end();
 	auto rfirst_it  = vec.rbegin();

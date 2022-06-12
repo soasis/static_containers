@@ -1,8 +1,8 @@
 # ============================================================================
 #
-# ztd.fixed_vector
+# ztd.fixed_container
 #
-# Written 2019 - 2021 by ThePhD <phdofthehouse@gmail.com>
+# Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 #
 # To the extent possible under law, the author(s) have dedicated all copyright and related
 # and neighboring rights to this software to the public domain worldwide. This software is
@@ -14,17 +14,17 @@
 # ============================================================================
 
 # # Tests
-file(GLOB_RECURSE ztd.fixed_vector.tests.basic.sources
+file(GLOB_RECURSE ztd.fixed_container.tests.basic.sources
 	LIST_DIRECTORIES FALSE
 	CONFIGURE_DEPENDS
 	source/*.cpp
 )
 
-add_executable(ztd.fixed_vector.tests.basic ${ztd.fixed_vector.tests.basic.sources})
-target_compile_definitions(ztd.fixed_vector.tests.basic
+add_executable(ztd.fixed_container.tests.basic ${ztd.fixed_container.tests.basic.sources})
+target_compile_definitions(ztd.fixed_container.tests.basic
 	PRIVATE
 )
-target_compile_options(ztd.fixed_vector.tests.basic
+target_compile_options(ztd.fixed_container.tests.basic
 	PRIVATE
 	${--utf8-literal-encoding}
 	${--utf8-source-encoding}
@@ -38,10 +38,10 @@ target_compile_options(ztd.fixed_vector.tests.basic
 	${--extra-constexpr-steps}
 	${--allow-zero-variadic-macro-arguments}
 )
-target_link_libraries(ztd.fixed_vector.tests.basic
+target_link_libraries(ztd.fixed_container.tests.basic
 	PRIVATE
-	ztd::fixed_vector
+	ztd::fixed_container
 	Catch2::Catch2
 	${CMAKE_DL_LIBS}
 )
-add_test(NAME ztd.fixed_vector.tests.basic COMMAND ztd.fixed_vector.tests.basic)
+add_test(NAME ztd.fixed_container.tests.basic COMMAND ztd.fixed_container.tests.basic)
