@@ -84,6 +84,15 @@ inline namespace ztd_fixed_container_tests_basic_insert {
 				REQUIRE(value == expected_value);
 			}
 		}
+		if constexpr (ztd::is_fixed_basic_string_v<ztd::remove_cvref_t<Container>>) {
+			if constexpr (!(std::is_class_v<T> || std::is_union_v<T>)) {
+				const T NullSentinelValue = {};
+				auto last_data            = c.data() + c.size();
+				auto last_c_str           = c.c_str() + c.size();
+				REQUIRE(*last_data == NullSentinelValue);
+				REQUIRE(*last_c_str == NullSentinelValue);
+			}
+		}
 	}
 } // namespace ztd_fixed_container_tests_basic_insert
 

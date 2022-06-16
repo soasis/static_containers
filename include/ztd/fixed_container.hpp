@@ -19,5 +19,6 @@
 #include <ztd/fixed_container/version.hpp>
 #include <ztd/fixed_container/fixed_vector.hpp>
 #include <ztd/fixed_container/fixed_string.hpp>
+#include <ztd/fixed_container/is.hpp>
 
 #endif // ZTD_FIXED_CONTAINER_HPP

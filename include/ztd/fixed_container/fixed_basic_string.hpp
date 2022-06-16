@@ -23,26 +23,39 @@
 #include <ztd/idk/empty_string.hpp>
 #include <ztd/idk/assert.hpp>
 
+#include <algorithm>
+#include <functional>
+#include <string_view>
+
 namespace ztd {
 	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_OPEN_I_
 
+
+	namespace __fc_detail {
+		template <typename _Ty, typename _Self, bool = ::ztd::is_char_traitable_v<_Ty>>
+		class __sv_conversion { };
+
+		template <typename _Ty, typename _Self>
+		class __sv_conversion<_Ty, _Self, true> {
+		public:
+			template <typename _Traits = ::std::char_traits<_Ty>>
+			constexpr operator ::std::basic_string_view<_Ty, _Traits>() const noexcept {
+				const _Self& __self = static_cast<const _Self&>(*this);
+				return ::std::basic_string_view<_Ty, _Traits>(__self.data(), __self.size());
+			}
+		};
+	} // namespace __fc_detail
+
 	template <typename _Ty, ::std::size_t _MaxLength>
-	class fixed_basic_string : private ::ztd::fixed_vector<_Ty, _MaxLength + 1> {
+	class fixed_basic_string
+	: private ::ztd::fixed_vector<_Ty, _MaxLength + 1>,
+	  public ::ztd::__fc_detail::__sv_conversion<_Ty, ::ztd::fixed_basic_string<_Ty, _MaxLength>> {
 	private:
-		using __base              = ::ztd::fixed_vector<_Ty, _MaxLength + 1>;
-		using __base_base_storage = typename __base::__base_storage;
-		using __alloc             = typename __base::__alloc;
-		using __alloc_traits      = typename __base::__alloc_traits;
+		using __base = ::ztd::fixed_vector<_Ty, _MaxLength + 1>;
 
 		constexpr void _M_set_null_terminator() noexcept {
-			if constexpr (::std::is_trivial_v<_Ty>) {
-				auto* __sentinel_ptr = this->_M_data(this->_M_layout._M_size);
-				*__sentinel_ptr      = _Ty {};
-			}
-			else {
-				__alloc __al {};
-				__alloc_traits::construct(__al, this->_M_data(this->_M_layout._M_size));
-			}
+			auto* __sentinel_ptr = this->_M_data(this->_M_layout._M_size);
+			::ztd::construct_at(__sentinel_ptr);
 		}
 
 	public:
@@ -86,45 +99,45 @@ namespace ztd {
 		}
 
 		template <typename... _Args>
-		reference emplace_back(_Args&&... __args) noexcept {
+		constexpr reference emplace_back(_Args&&... __args) noexcept {
 			reference __val = this->__base::emplace_back(::std::forward<_Args>(__args)...);
 			this->_M_set_null_terminator();
 			return __val;
 		}
 
-		reference push_back(const value_type& __value) noexcept {
+		constexpr reference push_back(const value_type& __value) noexcept {
 			reference __val = this->__base::push_back(__value);
 			this->_M_set_null_terminator();
 			return __val;
 		}
 
-		reference push_back(value_type&& __value) noexcept {
+		constexpr reference push_back(value_type&& __value) noexcept {
 			reference __val = this->__base::push_back(::std::move(__value));
 			this->_M_set_null_terminator();
 			return __val;
 		}
 
 		template <typename... _Args>
-		reference emplace_front(_Args&&... __args) noexcept {
+		constexpr reference emplace_front(_Args&&... __args) noexcept {
 			reference __val = this->__base::emplace_front(::std::forward<_Args>(__args)...);
 			this->_M_set_null_terminator();
 			return __val;
 		}
 
-		reference push_front(const value_type& __value) noexcept {
+		constexpr reference push_front(const value_type& __value) noexcept {
 			reference __val = this->__base::push_front(__value);
 			this->_M_set_null_terminator();
 			return __val;
 		}
 
-		reference push_front(value_type&& __value) noexcept {
+		constexpr reference push_front(value_type&& __value) noexcept {
 			reference __val = this->__base::push_front(::std::move(__value));
 			this->_M_set_null_terminator();
 			return __val;
 		}
 
 		template <typename... _Args>
-		iterator emplace(const_iterator __where, _Args&&... __args) noexcept {
+		constexpr iterator emplace(const_iterator __where, _Args&&... __args) noexcept {
 			iterator __itval = this->__base::emplace(::std::move(__where), ::std::forward<_Args>(__args)...);
 			this->_M_set_null_terminator();
 			return __itval;
@@ -194,6 +207,7 @@ namespace ztd {
 		using __base::empty;
 		using __base::end;
 		using __base::front;
+		using __base::is_empty;
 		using __base::rbegin;
 		using __base::rend;
 		using __base::size;
@@ -403,6 +417,46 @@ namespace ztd {
 			     __count < size_type(1));
 		}
 	};
+
+	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
+	constexpr bool operator==(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+		return ::std::equal(__left.cbegin(), __left.cend(), __right.cbegin(), __right.cend());
+	}
+
+	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
+	constexpr bool operator!=(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+		return !::std::equal(__left.cbegin(), __left.cend(), __right.cbegin(), __right.cend());
+	}
+
+	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
+	constexpr bool operator<(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+		return ::std::lexicographical_compare(
+		     __left.cbegin(), __left.cend(), __right.cbegin(), __right.cend(), ::std::less_equal<>());
+	}
+
+	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
+	constexpr bool operator>(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+		return ::std::lexicographical_compare(
+		     __left.cbegin(), __left.cend(), __right.cbegin(), __right.cend(), ::std::greater<>());
+	}
+
+	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
+	constexpr bool operator<=(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+		return ::std::lexicographical_compare(
+		     __left.cbegin(), __left.cend(), __right.cbegin(), __right.cend(), ::std::less_equal<>());
+	}
+
+	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
+	constexpr bool operator>=(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+		return ::std::lexicographical_compare(
+		     __left.cbegin(), __left.cend(), __right.cbegin(), __right.cend(), ::std::greater_equal<>());
+	}
 
 	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_CLOSE_I_
 

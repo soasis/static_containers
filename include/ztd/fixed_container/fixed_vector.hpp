@@ -23,6 +23,7 @@
 
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/to_address.hpp>
+#include <ztd/idk/construct_destroy.hpp>
 #include <ztd/idk/assert.hpp>
 #include <ztd/ranges/wrapped_pointer.hpp>
 
@@ -58,10 +59,6 @@ namespace ztd {
 		using difference_type        = ::std::ptrdiff_t;
 		inline static constexpr const ::std::size_t inline_capacity = _Capacity;
 
-	private:
-		using __alloc        = ::std::allocator<_Ty>;
-		using __alloc_traits = ::std::allocator_traits<__alloc>;
-
 	public:
 		constexpr fixed_vector() noexcept : __base_storage() {
 		}
@@ -89,27 +86,24 @@ namespace ztd {
 		template <typename... _Args>
 		constexpr reference emplace_back(_Args&&... __args) noexcept(
 		     ::std::is_nothrow_constructible_v<value_type, _Args...>) {
-			__alloc __al {};
 			auto* __target_ptr = this->_M_data(this->_M_layout._M_size);
-			__alloc_traits::construct(__al, __target_ptr, ::std::forward<_Args>(__args)...);
+			::ztd::construct_at(__target_ptr, ::std::forward<_Args>(__args)...);
 			++this->_M_layout._M_size;
 			return *__target_ptr;
 		}
 
 		constexpr reference push_back(const value_type& __value) noexcept(
 		     ::std::is_nothrow_copy_constructible_v<value_type>) {
-			__alloc __al {};
 			auto* __target_ptr = this->_M_data(this->_M_layout._M_size);
-			__alloc_traits::construct(__al, __target_ptr, __value);
+			::ztd::construct_at(__target_ptr, __value);
 			++this->_M_layout._M_size;
 			return *__target_ptr;
 		}
 
 		constexpr reference push_back(value_type&& __value) noexcept(
 		     ::std::is_nothrow_move_constructible_v<value_type>) {
-			__alloc __al {};
 			auto* __target_ptr = this->_M_data(this->_M_layout._M_size);
-			__alloc_traits::construct(__al, __target_ptr, ::std::move(__value));
+			::ztd::construct_at(__target_ptr, ::std::move(__value));
 			++this->_M_layout._M_size;
 			return *__target_ptr;
 		}
@@ -117,17 +111,17 @@ namespace ztd {
 		template <typename... _Args>
 		constexpr reference emplace_front(_Args&&... __args) noexcept(
 		     ::std::is_nothrow_constructible_v<value_type, _Args...>) {
-			*this->emplace(this->cbegin(), ::std::forward<_Args>(__args)...);
+			return *this->emplace(this->cbegin(), ::std::forward<_Args>(__args)...);
 		}
 
 		constexpr reference push_front(const value_type& __value) noexcept(
 		     ::std::is_nothrow_copy_constructible_v<value_type>) {
-			*this->insert(this->cbegin(), __value);
+			return *this->insert(this->cbegin(), __value);
 		}
 
 		constexpr reference push_front(value_type&& __value) noexcept(
 		     ::std::is_nothrow_move_constructible_v<value_type>) {
-			*this->insert(this->cbegin(), ::std::move(__value));
+			return *this->insert(this->cbegin(), ::std::move(__value));
 		}
 
 		template <typename... _Args>
@@ -136,20 +130,19 @@ namespace ztd {
 		          _Args...> && (::std::is_nothrow_move_assignable_v<value_type> || ::std::is_nothrow_copy_assignable_v<value_type>)) {
 			iterator __where_last = this->end();
 			if (this->empty() || __where == __where_last) {
-				this->emplace_back(::std::forward<_Args>(__args)...);
+				reference __element = this->emplace_back(::std::forward<_Args>(__args)...);
+				return iterator(::std::addressof(__element));
 			}
 			difference_type __where_dist = __where - this->cbegin();
-			ZTD_ASSERT(__where_dist < this->size());
-			__alloc __al {};
+			ZTD_ASSERT(static_cast<::std::size_t>(__where_dist) < this->size());
 
 			iterator __where_first(const_cast<pointer>(__where.base()));
 			iterator __where_p      = __where_first - 2;
 			iterator __from_where_p = __where_last - 1;
 
-			__alloc_traits::construct(
-			     __al, ::ztd::idk_adl::adl_to_address(__where_last), ::std::move(*__from_where_p));
+			::ztd::construct_at(::ztd::idk_adl::adl_to_address(__where_last), ::std::move(*__from_where_p));
 
-			for (; __from_where_p != __where_first; --__where_p, (void)__from_where_p) {
+			for (; __from_where_p != __where_first; --__where_p, (void)--__from_where_p) {
 				if constexpr (::std::is_nothrow_move_assignable_v<value_type>) {
 					*__where_p = ::std::move(*__from_where_p);
 				}
@@ -157,8 +150,7 @@ namespace ztd {
 					*__where_p = *__from_where_p;
 				}
 			}
-			__alloc_traits::construct(
-			     __al, ::ztd::idk_adl::adl_to_address(__where_first), ::std::forward<_Args>(__args)...);
+			::ztd::construct_at(::ztd::idk_adl::adl_to_address(__where_first), ::std::forward<_Args>(__args)...);
 			return __where_first;
 		}
 
@@ -202,8 +194,12 @@ namespace ztd {
 			if (__first == __last) {
 				return iterator(const_cast<pointer>(__where.base()));
 			}
-			difference_type __where_dist = __where.base() - this->begin();
-			ZTD_ASSERT(__where_dist < this->size());
+			if (this->empty()) {
+				// simply push all directly in
+				this->_M_unchecked_multi_insert_empty(::std::move(__first), ::std::move(__last));
+			}
+			difference_type __where_dist = __where - this->cbegin();
+			ZTD_ASSERT(static_cast<size_type>(__where_dist) < this->size());
 			// FIXME: lazy dependent-false
 			// idiom-check iterators
 			if constexpr (::std::is_void_v<value_type>) {
@@ -213,7 +209,8 @@ namespace ztd {
 				     ::std::move(__where), __where_dist, ::std::move(__first), ::std::move(__last));
 			}
 			else {
-				iterator __where_first     = this->emplace(::std::move(__where), *__first);
+				iterator __where_first = this->emplace(::std::move(__where), *__first);
+				++__first;
 				iterator __where_currently = __where_first;
 				for (; __first != __last; ++__first) {
 					++__where_currently;
@@ -252,7 +249,7 @@ namespace ztd {
 
 		constexpr void pop_back() noexcept {
 			ZTD_ASSERT(this->_M_layout._M_size > 0);
-			this->_M_data(this->_M_layout._M_size - 1).value.~value_type();
+			::ztd::destroy_at(::std::addressof(this->_M_data(this->_M_layout._M_size - 1).value));
 			--this->_M_layout._M_size;
 		}
 
@@ -282,6 +279,10 @@ namespace ztd {
 		}
 
 		constexpr bool empty() const noexcept {
+			return this->_M_layout._M_size == 0;
+		}
+
+		constexpr bool is_empty() const noexcept {
 			return this->_M_layout._M_size == 0;
 		}
 
@@ -406,13 +407,20 @@ namespace ztd {
 				else {
 					static_assert(::std::is_nothrow_copy_assignable_v<value_type>,
 					     "this type is neither nothrow copy-assignable or nothrow move-constructible, making "
-					     "it "
-					     "impossible to properly copy in a constexpr constext in a pre-C++20 world.");
+					     "it impossible to properly copy in a constexpr constext in a pre-C++20 world.");
 				}
 			}
-			__where_last->~value_type();
+			::ztd::destroy_at(::ztd::idk_adl::adl_to_address(__where_last));
 			--this->_M_layout._M_size;
 			return __where_first;
+		}
+
+		template <typename _First, typename _Last>
+		constexpr void _M_unchecked_multi_insert_empty(_First __first, _Last __last) {
+			for (; __first != __last; ++__first) {
+				::ztd::construct_at(this->_M_data(this->_M_layout._M_size), *__first);
+				++this->_M_layout._M_size;
+			}
 		}
 
 		constexpr iterator _M_unchecked_multi_erase(
@@ -446,7 +454,7 @@ namespace ztd {
 				     "impossible to properly copy in a constexpr constext in a pre-C++20 world.");
 			}
 			for (pointer __where_p = __where_last - 1;; --__where_p) {
-				__where_p->~value_type();
+				::ztd::destroy_at(__where_p);
 				if (__where_p == __where_diff_last) {
 					break;
 				}
