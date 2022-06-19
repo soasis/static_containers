@@ -25,6 +25,7 @@
 #include <ztd/idk/to_address.hpp>
 #include <ztd/idk/construct_destroy.hpp>
 #include <ztd/idk/assert.hpp>
+#include <ztd/idk/to_mutable_iter.hpp>
 #include <ztd/ranges/wrapped_pointer.hpp>
 
 #include <cstddef>
@@ -126,32 +127,9 @@ namespace ztd {
 
 		template <typename... _Args>
 		constexpr iterator emplace(const_iterator __where, _Args&&... __args) noexcept(
-		     ::std::is_nothrow_constructible_v<value_type,
-		          _Args...> && (::std::is_nothrow_move_assignable_v<value_type> || ::std::is_nothrow_copy_assignable_v<value_type>)) {
-			iterator __where_last = this->end();
-			if (this->empty() || __where == __where_last) {
-				reference __element = this->emplace_back(::std::forward<_Args>(__args)...);
-				return iterator(::std::addressof(__element));
-			}
-			difference_type __where_dist = __where - this->cbegin();
-			ZTD_ASSERT(static_cast<::std::size_t>(__where_dist) < this->size());
-
-			iterator __where_first(const_cast<pointer>(__where.base()));
-			iterator __where_p      = __where_first - 2;
-			iterator __from_where_p = __where_last - 1;
-
-			::ztd::construct_at(::ztd::idk_adl::adl_to_address(__where_last), ::std::move(*__from_where_p));
-
-			for (; __from_where_p != __where_first; --__where_p, (void)--__from_where_p) {
-				if constexpr (::std::is_nothrow_move_assignable_v<value_type>) {
-					*__where_p = ::std::move(*__from_where_p);
-				}
-				else {
-					*__where_p = *__from_where_p;
-				}
-			}
-			::ztd::construct_at(::ztd::idk_adl::adl_to_address(__where_first), ::std::forward<_Args>(__args)...);
-			return __where_first;
+		     _S_emplace_noexcept<_Args...>()) {
+			ZTD_ASSERT(inline_capacity > this->size());
+			return this->_M_emplace_no_capacity_check(::std::move(__where), ::std::forward<_Args>(__args)...);
 		}
 
 		constexpr iterator insert(const_iterator __where, value_type&& __value) noexcept(
@@ -172,14 +150,11 @@ namespace ztd {
 			return this->insert(::std::move(__where), __values.begin(), __values.end());
 		}
 
-		constexpr iterator insert(const_iterator __where, size_type __count) noexcept {
-			return this->insert(::std::move(__where), __count, value_type {});
-		}
-
 		constexpr iterator insert(const_iterator __where, size_type __count, const value_type& __value) noexcept {
 			if (__count == 0) {
 				return iterator(const_cast<pointer>(__where.base()));
 			}
+			ZTD_ASSERT(inline_capacity > this->size());
 			difference_type __where_dist = __where - this->begin();
 			ZTD_ASSERT(__where_dist < this->size());
 			ZTD_ASSERT(static_cast<size_type>(__count + __where_dist) <= this->capacity());
@@ -192,12 +167,14 @@ namespace ztd {
 		          >* = nullptr>
 		constexpr iterator insert(const_iterator __where, _First __first, _Last __last) {
 			if (__first == __last) {
-				return iterator(const_cast<pointer>(__where.base()));
+				return to_mutable_iter(::std::move(__where), *this);
 			}
 			if (this->empty()) {
 				// simply push all directly in
 				this->_M_unchecked_multi_insert_empty(::std::move(__first), ::std::move(__last));
+				return this->begin();
 			}
+			ZTD_ASSERT(inline_capacity > this->size());
 			difference_type __where_dist = __where - this->cbegin();
 			ZTD_ASSERT(static_cast<size_type>(__where_dist) < this->size());
 			// FIXME: lazy dependent-false
@@ -224,7 +201,7 @@ namespace ztd {
 			difference_type __where_dist = __where - this->begin();
 			ZTD_ASSERT(__where_dist < this->_M_layout._M_size);
 			if (__where_dist == this->_M_layout._M_size) {
-				return iterator(const_cast<pointer>(::std::move(__where).base()));
+				return to_mutable_iter(*this, ::std::move(__where));
 			}
 			if (__where_dist == 0) {
 				pop_front();
@@ -235,7 +212,7 @@ namespace ztd {
 
 		constexpr iterator erase(const_iterator __where_first, const_iterator __where_last) noexcept {
 			if (__where_first == __where_last) {
-				return iterator(const_cast<pointer>(::std::move(__where_first).base()));
+				return to_mutable_iter(*this, ::std::move(__where_last));
 			}
 			difference_type __where_diff = __where_last - __where_first;
 			ZTD_ASSERT(__where_diff < this->_M_size);
@@ -393,6 +370,45 @@ namespace ztd {
 		}
 
 	private:
+		template <typename... _Args>
+		static constexpr bool _S_emplace_noexcept() noexcept {
+			return ::std::is_nothrow_constructible_v<value_type, _Args...> // cf-hack
+			     && (::std::is_nothrow_move_assignable_v<value_type>       // cf-hack
+			          || ::std::is_nothrow_copy_assignable_v<value_type>);
+		}
+		template <typename... _Args>
+		constexpr iterator _M_emplace_no_capacity_check(const_iterator __where, _Args&&... __args) noexcept(
+		     _S_emplace_noexcept<_Args...>()) {
+			iterator __where_last = this->end();
+			if (this->empty() || __where == __where_last) {
+				reference __element = this->emplace_back(::std::forward<_Args>(__args)...);
+				return iterator(::std::addressof(__element));
+			}
+			return this->_M_unchecked_emplace(
+			     ::std::move(__where), ::std::move(__where_last), ::std::forward<_Args>(__args)...);
+		}
+
+		template <typename... _Args>
+		constexpr iterator _M_unchecked_emplace(const_iterator __where, iterator __where_last,
+		     _Args&&... __args) noexcept(_S_emplace_noexcept<_Args...>()) {
+			difference_type __where_dist = __where - this->cbegin();
+			ZTD_ASSERT(static_cast<::std::size_t>(__where_dist) < this->size());
+			iterator __where_first = to_mutable_iter(__where, *this);
+
+			// Step 0: create a new object off-to-the-right
+			auto __where_middle_last = ::std::prev(__where_last);
+			::ztd::construct_at(::ztd::idk_adl::adl_to_address(__where_last), *__where_middle_last);
+			// Step 1: shift everything to the right, if size is large enough to need it
+			if (__where_middle_last != __where_first) {
+				[[maybe_unused]] auto __destination_last
+				     = ::std::move_backward(__where_first, __where_middle_last, __where_last);
+			}
+			// Step 2: construct the new value in place
+			::ztd::construct_at(::ztd::idk_adl::adl_to_address(__where_first), ::std::forward<_Args>(__args)...);
+			++this->_M_layout._M_size;
+			return __where_first;
+		}
+
 		constexpr iterator _M_unchecked_erase(const_pointer __where_cp) noexcept {
 			iterator __where_first(const_cast<pointer>(__where_cp));
 			iterator __where_last = this->begin() + this->size();

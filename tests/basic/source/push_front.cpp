@@ -17,29 +17,34 @@
 
 #include <ztd/tests/types.hpp>
 
-#include <memory>
-
-inline namespace ztd_fixed_container_tests_basic_insert {
+inline namespace ztd_fixed_container_tests_basic_push_front {
 	template <typename Container>
-	constexpr auto make_fixed_container(std::size_t elements) {
+	auto make_fixed_container(std::size_t elements) {
 		using T = typename Container::value_type;
-		std::unique_ptr<T[]> init(new T[elements] {});
+		Container c {};
 		for (std::size_t i = 0; i < elements; ++i) {
-			if constexpr (std::is_arithmetic_v<T>) {
-				init[i] = T(i);
+			if ((i % 2) == 1) {
+				if constexpr (std::is_arithmetic_v<T>) {
+					c.emplace_front(i);
+				}
+				else {
+					c.emplace_front();
+				}
 			}
 			else {
-				init[i] = T();
+				if constexpr (std::is_arithmetic_v<T>) {
+					c.push_front(T(i));
+				}
+				else {
+					c.push_front(T {});
+				}
 			}
 		}
-
-		Container c {};
-		c.insert(c.begin(), init.get() + 0, init.get() + elements);
 		return c;
 	}
 
 	template <typename Container>
-	void test_container_insert(Container& c, std::size_t expected_capacity, std::size_t expected_size) {
+	void test_container_push_front(Container& c, std::size_t expected_capacity, std::size_t expected_size) {
 		using T = typename ztd::remove_cvref_t<Container>::value_type;
 
 		std::size_t container_capacity_from_function        = c.capacity();
@@ -85,7 +90,7 @@ inline namespace ztd_fixed_container_tests_basic_insert {
 		for (std::size_t i = 0; i < c.size(); ++i) {
 			const auto& value = c[i];
 			if constexpr (std::is_arithmetic_v<T>) {
-				const auto expected_value = T(i);
+				const auto expected_value = T((c.size() - 1) - i);
 				REQUIRE(value == expected_value);
 			}
 			else if constexpr (!std::is_class_v<T> && !std::is_union_v<T>) {
@@ -103,19 +108,19 @@ inline namespace ztd_fixed_container_tests_basic_insert {
 			}
 		}
 	}
-} // namespace ztd_fixed_container_tests_basic_insert
+} // namespace ztd_fixed_container_tests_basic_push_front
 
 TEMPLATE_LIST_TEST_CASE(
-     "fixed_vector insert tests", "[fixed_vector][run_time][insert]", ztd::tests::scalar_types_list) {
+     "fixed_vector push_front tests", "[fixed_vector][run_time][push_front]", ztd::tests::scalar_types_list) {
 	constexpr std::size_t expected_capacity = 40;
 	constexpr std::size_t expected_size     = 5;
 
 	SECTION("fixed_vector") {
 		auto c = make_fixed_container<ztd::fixed_vector<TestType, expected_capacity>>(expected_size);
-		test_container_insert(c, expected_capacity, expected_size);
+		test_container_push_front(c, expected_capacity, expected_size);
 	}
 	SECTION("fixed_basic_string") {
 		auto c = make_fixed_container<ztd::fixed_basic_string<TestType, expected_capacity>>(expected_size);
-		test_container_insert(c, expected_capacity, expected_size);
+		test_container_push_front(c, expected_capacity, expected_size);
 	}
 }

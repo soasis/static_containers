@@ -50,6 +50,56 @@ namespace ztd {
 		template <::std::size_t _Capacity>
 		using __optimal_storage_type_t = typename __optimal_storage_type<_Capacity>::type;
 
+		template <typename _LayoutFirst, typename _LayoutB>
+		constexpr auto __get_optiomal_layout() noexcept {
+			// Cache is measured in 8-bit bytes, versus CHAR_BIT-sized structures
+			constexpr ::std::size_t __cache_bit_size        = ZTD_L1_CACHE_LINE_SIZE_I_ * 8;
+			constexpr ::std::size_t __layout_first_bit_size = (sizeof(_LayoutFirst) * CHAR_BIT);
+			constexpr ::std::size_t __layout_b_bit_size     = (sizeof(_LayoutB) * CHAR_BIT);
+			constexpr bool __layout_first_cache_smaller     = __layout_first_bit_size <= __cache_bit_size;
+			constexpr bool __layout_b_cache_smaller         = __layout_b_bit_size <= __cache_bit_size;
+			if constexpr (__layout_first_cache_smaller && __layout_b_cache_smaller) {
+				// if both layouts are smaller than cache
+				// pick the one with the optimal size
+				if constexpr (sizeof(_LayoutFirst) < sizeof(_LayoutB)) {
+					return _LayoutFirst {};
+				}
+				else {
+					return _LayoutB {};
+				}
+			}
+			else if constexpr (__layout_first_cache_smaller) {
+				// prefer the one that fits in cache (size first better)
+				return _LayoutFirst {};
+			}
+			else if constexpr (__layout_b_cache_smaller) {
+				// prefer the one that fits in cache (size last if it gets us inside of cache)
+				return _LayoutB {};
+			}
+			else {
+				// There are 2 intepretations.
+				// (1) is always prefer size first when we're beyond cache size.
+				// That would mostly be to prevent cache hits, albeit due to alignment it CAN blow up size
+				// of a structure considerable....
+				// (2) would be to keep smallest, since that would make storage better.
+				// Fixed-size vectors are often used to create better storage situations,
+				// and we don't have a guarantee this won't be put inside of classes (it often is).
+				//
+				// Therefore, we pick (2) to prioritize the more general use cases.
+#if 0
+				// (1)
+				return _LayoutFirst{};
+#else
+				// (2)
+				if constexpr (sizeof(_LayoutFirst) < sizeof(_LayoutB)) {
+					return _LayoutFirst {};
+				}
+				else {
+					return _LayoutB {};
+				}
+#endif
+			}
+		}
 
 		template <typename _Ty, ::std::size_t _Capacity, bool = ::std::is_trivial_v<_Ty>>
 		class __storage {
@@ -71,10 +121,7 @@ namespace ztd {
 				__optimal_storage_type_t<_Capacity> _M_size;
 			};
 
-			using __storage_layout = ::std::conditional_t<sizeof(__size_first) < sizeof(__size_last),
-			     __size_first, // size first is better compacted
-			     __size_last   // otherwise, size last is better / evenly sized
-			     >;
+			using __storage_layout = decltype(__get_optiomal_layout<__size_first, __size_last>());
 
 		public:
 			constexpr __storage() noexcept : _M_layout() {
@@ -149,10 +196,7 @@ namespace ztd {
 				__optimal_storage_type_t<_Capacity> _M_size;
 			};
 
-			using __storage_layout = ::std::conditional_t<sizeof(__size_first) < sizeof(__size_last),
-			     __size_first, // size first is better compacted
-			     __size_last   // otherwise, size last is better / evenly computed
-			     >;
+			using __storage_layout = decltype(__get_optiomal_layout<__size_first, __size_last>());
 
 		public:
 			constexpr __storage() noexcept : _M_layout() {

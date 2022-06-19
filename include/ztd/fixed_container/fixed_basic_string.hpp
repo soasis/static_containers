@@ -81,7 +81,7 @@ namespace ztd {
 		}
 
 		constexpr fixed_basic_string(size_type __count) noexcept : __base(__count) {
-			this->insert(this->cend(), __count);
+			this->_M_set_null_terminator();
 		}
 
 		constexpr fixed_basic_string(size_type __count, const value_type& __value) noexcept
@@ -157,12 +157,6 @@ namespace ztd {
 
 		constexpr iterator insert(const_iterator __where, ::std::initializer_list<value_type> __ilvalue) noexcept {
 			iterator __itval = this->__base::insert(::std::move(__where), __ilvalue);
-			this->_M_set_null_terminator();
-			return __itval;
-		}
-
-		constexpr iterator insert(const_iterator __where, size_type __count) noexcept {
-			iterator __itval = this->__base::insert(::std::move(__where), __count);
 			this->_M_set_null_terminator();
 			return __itval;
 		}
