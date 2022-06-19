@@ -60,6 +60,14 @@ namespace ztd {
 		using difference_type        = ::std::ptrdiff_t;
 		inline static constexpr const ::std::size_t inline_capacity = _Capacity;
 
+	private:
+		template <typename... _Args>
+		static constexpr bool _S_emplace_noexcept() noexcept {
+			return ::std::is_nothrow_constructible_v<value_type, _Args...> // cf-hack
+			     && (::std::is_nothrow_move_assignable_v<value_type>       // cf-hack
+			          || ::std::is_nothrow_copy_assignable_v<value_type>);
+		}
+
 	public:
 		constexpr fixed_vector() noexcept : __base_storage() {
 		}
@@ -370,12 +378,6 @@ namespace ztd {
 		}
 
 	private:
-		template <typename... _Args>
-		static constexpr bool _S_emplace_noexcept() noexcept {
-			return ::std::is_nothrow_constructible_v<value_type, _Args...> // cf-hack
-			     && (::std::is_nothrow_move_assignable_v<value_type>       // cf-hack
-			          || ::std::is_nothrow_copy_assignable_v<value_type>);
-		}
 		template <typename... _Args>
 		constexpr iterator _M_emplace_no_capacity_check(const_iterator __where, _Args&&... __args) noexcept(
 		     _S_emplace_noexcept<_Args...>()) {
