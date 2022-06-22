@@ -1,5 +1,5 @@
 // =============================================================================
-// ztd::fixed_container
+// ztd.static_containers
 //
 // Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 //
@@ -13,23 +13,12 @@
 
 #pragma once
 
-#ifndef ZTD_FIXED_CONTAINER_FORWARD_HPP
-#define ZTD_FIXED_CONTAINER_FORWARD_HPP
+#ifndef ZTD_STATIC_CONTAINERS_HPP
+#define ZTD_STATIC_CONTAINERS_HPP
 
-#include <ztd/fixed_container/version.hpp>
+#include <ztd/static_containers/version.hpp>
+#include <ztd/static_containers/static_vector.hpp>
+#include <ztd/static_containers/static_string.hpp>
+#include <ztd/static_containers/is.hpp>
 
-#include <cstddef>
-
-namespace ztd {
-	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_OPEN_I_
-
-	template <typename, ::std::size_t>
-	class fixed_vector;
-
-	template <typename, ::std::size_t>
-	class fixed_basic_string;
-
-	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_CLOSE_I_
-} // namespace ztd
-
-#endif // ZTD_FIXED_CONTAINER_FORWARD_HPP
+#endif // ZTD_STATIC_CONTAINERS_HPP

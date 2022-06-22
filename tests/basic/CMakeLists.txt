@@ -1,6 +1,6 @@
 # ============================================================================
 #
-# ztd.fixed_container
+# ztd.static_container
 #
 # Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 #
@@ -14,17 +14,17 @@
 # ============================================================================
 
 # # Tests
-file(GLOB_RECURSE ztd.fixed_container.tests.basic.sources
+file(GLOB_RECURSE ztd.static_containers.tests.basic.sources
 	LIST_DIRECTORIES FALSE
 	CONFIGURE_DEPENDS
 	source/*.cpp
 )
 
-add_executable(ztd.fixed_container.tests.basic ${ztd.fixed_container.tests.basic.sources})
-target_compile_definitions(ztd.fixed_container.tests.basic
+add_executable(ztd.static_containers.tests.basic ${ztd.static_containers.tests.basic.sources})
+target_compile_definitions(ztd.static_containers.tests.basic
 	PRIVATE
 )
-target_compile_options(ztd.fixed_container.tests.basic
+target_compile_options(ztd.static_containers.tests.basic
 	PRIVATE
 	${--utf8-literal-encoding}
 	${--utf8-source-encoding}
@@ -38,10 +38,10 @@ target_compile_options(ztd.fixed_container.tests.basic
 	${--extra-constexpr-steps}
 	${--allow-zero-variadic-macro-arguments}
 )
-target_link_libraries(ztd.fixed_container.tests.basic
+target_link_libraries(ztd.static_containers.tests.basic
 	PRIVATE
-	ztd::fixed_container
+	ztd.static_containers
 	Catch2::Catch2
 	${CMAKE_DL_LIBS}
 )
-add_test(NAME ztd.fixed_container.tests.basic COMMAND ztd.fixed_container.tests.basic)
+add_test(NAME ztd.static_containers.tests.basic COMMAND ztd.static_containers.tests.basic)

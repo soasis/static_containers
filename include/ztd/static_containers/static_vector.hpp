@@ -1,5 +1,5 @@
 // =============================================================================
-// ztd::fixed_container
+// ztd.static_containers
 //
 // Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 //
@@ -13,13 +13,13 @@
 
 #pragma once
 
-#ifndef ZTD_FIXED_CONTAINER_FIXED_VECTOR_HPP
-#define ZTD_FIXED_CONTAINER_FIXED_VECTOR_HPP
+#ifndef ZTD_STATIC_CONTAINERS_STATIC_VECTOR_HPP
+#define ZTD_STATIC_CONTAINERS_STATIC_VECTOR_HPP
 
-#include <ztd/fixed_container/version.hpp>
+#include <ztd/static_containers/version.hpp>
 
-#include <ztd/fixed_container/forward.hpp>
-#include <ztd/fixed_container/detail/storage.hpp>
+#include <ztd/static_containers/forward.hpp>
+#include <ztd/static_containers/detail/storage.hpp>
 
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/to_address.hpp>
@@ -36,13 +36,13 @@
 #include <iterator>
 
 namespace ztd {
-	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_OPEN_I_
+	ZTD_STATIC_CONTAINERS_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _Ty, ::std::size_t _Capacity>
-	class fixed_vector : private __fv_detail::__storage<_Ty, _Capacity> {
+	class static_vector : private __fv_detail::__storage<_Ty, _Capacity> {
 	private:
 		template <typename, ::std::size_t>
-		friend class ::ztd::fixed_basic_string;
+		friend class ::ztd::static_basic_string;
 
 		using __base_storage = __fv_detail::__storage<_Ty, _Capacity>;
 
@@ -69,18 +69,18 @@ namespace ztd {
 		}
 
 	public:
-		constexpr fixed_vector() noexcept : __base_storage() {
+		constexpr static_vector() noexcept : __base_storage() {
 		}
 
-		constexpr fixed_vector(::std::initializer_list<value_type> __values) noexcept : __base_storage() {
+		constexpr static_vector(::std::initializer_list<value_type> __values) noexcept : __base_storage() {
 			this->insert(this->cend(), ::std::move(__values));
 		}
 
-		constexpr fixed_vector(size_type __count) noexcept : __base_storage() {
+		constexpr static_vector(size_type __count) noexcept : __base_storage() {
 			this->insert(this->cend(), __count);
 		}
 
-		constexpr fixed_vector(size_type __count, const value_type& __value) noexcept : __base_storage() {
+		constexpr static_vector(size_type __count, const value_type& __value) noexcept : __base_storage() {
 			this->insert(this->cend(), __count, __value);
 		}
 
@@ -88,7 +88,7 @@ namespace ztd {
 		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf-hack
 		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
 		          >* = nullptr>
-		constexpr fixed_vector(_First __first, _Last __last) noexcept : __base_storage() {
+		constexpr static_vector(_First __first, _Last __last) noexcept : __base_storage() {
 			this->insert(this->cend(), ::std::move(__first), ::std::move(__last));
 		}
 
@@ -483,10 +483,10 @@ namespace ztd {
 	};
 
 	template <typename _Ty>
-	class fixed_vector<_Ty, 0> {
+	class static_vector<_Ty, 0> {
 	private:
 		template <typename, ::std::size_t>
-		friend class ::ztd::fixed_basic_string;
+		friend class ::ztd::static_basic_string;
 
 	public:
 		using value_type                                            = _Ty;
@@ -500,77 +500,77 @@ namespace ztd {
 		using difference_type                                       = ::std::ptrdiff_t;
 		inline static constexpr const ::std::size_t inline_capacity = 0;
 
-		constexpr fixed_vector() noexcept {
+		constexpr static_vector() noexcept {
 		}
 
-		constexpr fixed_vector(::std::initializer_list<value_type> __values) noexcept {
+		constexpr static_vector(::std::initializer_list<value_type> __values) noexcept {
 			ZTD_ASSERT_MESSAGE("there must be no values", __values.size() < size_type(1));
 		}
 
-		constexpr fixed_vector(size_type __count) noexcept {
+		constexpr static_vector(size_type __count) noexcept {
 			ZTD_ASSERT_MESSAGE("there must be no values", __count < size_type(1));
 		}
 
 		template <typename... _Args>
 		reference emplace_back(_Args&&...) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		reference push_back(const value_type&) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		reference push_back(value_type&&) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		template <typename... _Args>
 		reference emplace_front(_Args&&...) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		reference push_front(const value_type&) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		reference push_front(value_type&&) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		template <typename... _Args>
 		iterator emplace(const_iterator, _Args&&...) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be emplaced in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("nothing can be emplaced in this static_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, value_type&&) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this static_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, const value_type&) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this static_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, ::std::initializer_list<value_type>) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this static_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, size_type) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this static_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, size_type, const value_type&) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this static_vector", false);
 			return iterator(nullptr);
 		}
 
@@ -579,45 +579,45 @@ namespace ztd {
 		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
 		          >* = nullptr>
 		constexpr iterator insert(const_iterator, _First, _Last) {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator erase(const_iterator) noexcept {
-			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this static_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator erase(const_iterator, const_iterator) noexcept {
-			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this static_vector", false);
 			return iterator(nullptr);
 		}
 
 		constexpr void pop_back() noexcept {
-			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this static_vector", false);
 		}
 
 		constexpr void pop_front() noexcept {
-			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this static_vector", false);
 		}
 
 		constexpr reference front() noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		constexpr const_reference front() const noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<const_pointer>(nullptr);
 		}
 
 		constexpr reference back() noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		constexpr const_reference back() const noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<const_pointer>(nullptr);
 		}
 
@@ -673,28 +673,28 @@ namespace ztd {
 		}
 
 		constexpr reference operator[](size_type) {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		constexpr const_reference operator[](size_type) const {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_vector", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);
 			return *static_cast<const_pointer>(nullptr);
 		}
 
 		constexpr void resize(size_type __count) noexcept {
 			ZTD_ASSERT_MESSAGE(
-			     "there is no capacity in this fixed_vector to resize to anything but 0", __count < size_type(1));
+			     "there is no capacity in this static_vector to resize to anything but 0", __count < size_type(1));
 		}
 
 		constexpr void resize(size_type __count, const value_type&) noexcept {
 			ZTD_ASSERT_MESSAGE(
-			     "there is no capacity in this fixed_vector to resize to anything but 0", __count < size_type(1));
+			     "there is no capacity in this static_vector to resize to anything but 0", __count < size_type(1));
 		}
 	};
 
-	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_CLOSE_I_
+	ZTD_STATIC_CONTAINERS_INLINE_ABI_NAMESPACE_CLOSE_I_
 
 } // namespace ztd
 
-#endif // ZTD_FIXED_CONTAINER_FIXED_VECTOR_HPP
+#endif // ZTD_STATIC_CONTAINERS_STATIC_VECTOR_HPP

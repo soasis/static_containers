@@ -1,5 +1,5 @@
 // =============================================================================
-// ztd::fixed_container
+// ztd.static_containers
 //
 // Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 //
@@ -11,7 +11,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 // ============================================================================ //
 
-#include <ztd/fixed_container.hpp>
+#include <ztd/static_containers.hpp>
 
 #include <catch2/catch_all.hpp>
 
@@ -20,10 +20,10 @@
 #include <cstddef>
 #include <string>
 
-TEMPLATE_LIST_TEST_CASE("fixed_vector with an empty with capacity using compile-time capable scalar types",
-     "[fixed_vector][run_time][empty]", ztd::tests::scalar_types_list) {
+TEMPLATE_LIST_TEST_CASE("static_string with an empty with capacity using compile-time capable scalar types",
+     "[static_string][run_time][empty]", ztd::tests::scalar_types_list) {
 	constexpr std::size_t Capacity = 5;
-	ztd::fixed_vector<TestType, Capacity> c {};
+	ztd::static_basic_string<TestType, Capacity> c {};
 	static_assert(c.capacity() == Capacity);
 	auto first_it = c.begin();
 	auto last_it  = c.end();

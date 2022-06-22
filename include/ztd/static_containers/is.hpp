@@ -1,5 +1,5 @@
 // =============================================================================
-// ztd::fixed_container
+// ztd.static_containers
 //
 // Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 //
@@ -13,38 +13,38 @@
 
 #pragma once
 
-#ifndef ZTD_FIXED_CONTAINER_IS_HPP
-#define ZTD_FIXED_CONTAINER_IS_HPP
+#ifndef ZTD_STATIC_CONTAINERS_IS_HPP
+#define ZTD_STATIC_CONTAINERS_IS_HPP
 
-#include <ztd/fixed_container/version.hpp>
+#include <ztd/static_containers/version.hpp>
 
-#include <ztd/fixed_container/forward.hpp>
+#include <ztd/static_containers/forward.hpp>
 
 #include <type_traits>
 #include <cstddef>
 
 namespace ztd {
-	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_OPEN_I_
+	ZTD_STATIC_CONTAINERS_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename>
-	class is_fixed_vector : public ::std::false_type { };
+	class is_static_vector : public ::std::false_type { };
 
 	template <typename _Ty, ::std::size_t _Capacity>
-	class is_fixed_vector<fixed_vector<_Ty, _Capacity>> : public ::std::true_type { };
+	class is_static_vector<static_vector<_Ty, _Capacity>> : public ::std::true_type { };
 
 	template <typename>
-	class is_fixed_basic_string : public ::std::false_type { };
+	class is_static_basic_string : public ::std::false_type { };
 
 	template <typename _Ty, ::std::size_t _Capacity>
-	class is_fixed_basic_string<fixed_basic_string<_Ty, _Capacity>> : public ::std::true_type { };
+	class is_static_basic_string<static_basic_string<_Ty, _Capacity>> : public ::std::true_type { };
 
 	template <typename _Ty>
-	inline constexpr bool is_fixed_vector_v = is_fixed_vector<_Ty>::value;
+	inline constexpr bool is_static_vector_v = is_static_vector<_Ty>::value;
 
 	template <typename _Ty>
-	inline constexpr bool is_fixed_basic_string_v = is_fixed_basic_string<_Ty>::value;
+	inline constexpr bool is_static_basic_string_v = is_static_basic_string<_Ty>::value;
 
-	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_CLOSE_I_
+	ZTD_STATIC_CONTAINERS_INLINE_ABI_NAMESPACE_CLOSE_I_
 } // namespace ztd
 
-#endif // ZTD_FIXED_CONTAINER_IS_HPP
+#endif // ZTD_STATIC_CONTAINERS_IS_HPP

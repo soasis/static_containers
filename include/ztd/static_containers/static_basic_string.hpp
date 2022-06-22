@@ -1,5 +1,5 @@
 // =============================================================================
-// ztd::fixed_container
+// ztd.static_containers
 //
 // Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 //
@@ -13,12 +13,12 @@
 
 #pragma once
 
-#ifndef ZTD_FIXED_CONTAINER_FIXED_BASIC_STRING_HPP
-#define ZTD_FIXED_CONTAINER_FIXED_BASIC_STRING_HPP
+#ifndef ZTD_STATIC_CONTAINERS_STATIC_BASIC_STRING_HPP
+#define ZTD_STATIC_CONTAINERS_STATIC_BASIC_STRING_HPP
 
-#include <ztd/fixed_container/version.hpp>
+#include <ztd/static_containers/version.hpp>
 
-#include <ztd/fixed_container/fixed_vector.hpp>
+#include <ztd/static_containers/static_vector.hpp>
 
 #include <ztd/idk/empty_string.hpp>
 #include <ztd/idk/assert.hpp>
@@ -28,7 +28,7 @@
 #include <string_view>
 
 namespace ztd {
-	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_OPEN_I_
+	ZTD_STATIC_CONTAINERS_INLINE_ABI_NAMESPACE_OPEN_I_
 
 
 	namespace __fc_detail {
@@ -47,11 +47,11 @@ namespace ztd {
 	} // namespace __fc_detail
 
 	template <typename _Ty, ::std::size_t _MaxLength>
-	class fixed_basic_string
-	: private ::ztd::fixed_vector<_Ty, _MaxLength + 1>,
-	  public ::ztd::__fc_detail::__sv_conversion<_Ty, ::ztd::fixed_basic_string<_Ty, _MaxLength>> {
+	class static_basic_string
+	: private ::ztd::static_vector<_Ty, _MaxLength + 1>,
+	  public ::ztd::__fc_detail::__sv_conversion<_Ty, ::ztd::static_basic_string<_Ty, _MaxLength>> {
 	private:
-		using __base = ::ztd::fixed_vector<_Ty, _MaxLength + 1>;
+		using __base = ::ztd::static_vector<_Ty, _MaxLength + 1>;
 
 		constexpr void _M_set_null_terminator() noexcept {
 			auto* __sentinel_ptr = this->_M_data(this->_M_layout._M_size);
@@ -72,19 +72,19 @@ namespace ztd {
 		using difference_type                                       = typename __base::difference_type;
 		inline static constexpr const ::std::size_t inline_capacity = _MaxLength;
 
-		constexpr fixed_basic_string() noexcept : __base() {
+		constexpr static_basic_string() noexcept : __base() {
 			this->_M_set_null_terminator();
 		}
 
-		constexpr fixed_basic_string(::std::initializer_list<value_type> __values) noexcept : __base(__values) {
+		constexpr static_basic_string(::std::initializer_list<value_type> __values) noexcept : __base(__values) {
 			this->_M_set_null_terminator();
 		}
 
-		constexpr fixed_basic_string(size_type __count) noexcept : __base(__count) {
+		constexpr static_basic_string(size_type __count) noexcept : __base(__count) {
 			this->_M_set_null_terminator();
 		}
 
-		constexpr fixed_basic_string(size_type __count, const value_type& __value) noexcept
+		constexpr static_basic_string(size_type __count, const value_type& __value) noexcept
 		: __base(__count, __value) {
 			this->_M_set_null_terminator();
 		}
@@ -93,7 +93,7 @@ namespace ztd {
 		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf-hack
 		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
 		          >* = nullptr>
-		constexpr fixed_basic_string(_First __first, _Last __last) noexcept
+		constexpr static_basic_string(_First __first, _Last __last) noexcept
 		: __base(::std::move(__first), ::std::move(__last)) {
 			this->_M_set_null_terminator();
 		}
@@ -220,7 +220,7 @@ namespace ztd {
 	};
 
 	template <typename _Ty>
-	class fixed_basic_string<_Ty, 0> {
+	class static_basic_string<_Ty, 0> {
 	public:
 		using value_type                                            = _Ty;
 		using reference                                             = ::std::add_lvalue_reference_t<_Ty>;
@@ -233,77 +233,77 @@ namespace ztd {
 		using difference_type                                       = ::std::ptrdiff_t;
 		inline static constexpr const ::std::size_t inline_capacity = 0;
 
-		constexpr fixed_basic_string() noexcept {
+		constexpr static_basic_string() noexcept {
 		}
 
-		constexpr fixed_basic_string(::std::initializer_list<value_type> __values) noexcept {
+		constexpr static_basic_string(::std::initializer_list<value_type> __values) noexcept {
 			ZTD_ASSERT_MESSAGE("there must be no values", __values.size() < size_type(1));
 		}
 
-		constexpr fixed_basic_string(size_type __count) noexcept {
+		constexpr static_basic_string(size_type __count) noexcept {
 			ZTD_ASSERT_MESSAGE("there must be no values", __count < size_type(1));
 		}
 
 		template <typename... _Args>
 		reference emplace_back(_Args&&...) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		reference push_back(const value_type&) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		reference push_back(value_type&&) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		template <typename... _Args>
 		reference emplace_front(_Args&&...) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		reference push_front(const value_type&) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		reference push_front(value_type&&) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		template <typename... _Args>
 		iterator emplace(const_iterator, _Args&&...) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be emplaced in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("nothing can be emplaced in this static_basic_string", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, value_type&&) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this static_basic_string", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, const value_type&) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this static_basic_string", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, ::std::initializer_list<value_type>) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this static_basic_string", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, size_type) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this static_basic_string", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator insert(const_iterator, size_type, const value_type&) noexcept {
-			ZTD_ASSERT_MESSAGE("nothing can be inserted in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("nothing can be inserted in this static_basic_string", false);
 			return iterator(nullptr);
 		}
 
@@ -312,38 +312,38 @@ namespace ztd {
 		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
 		          >* = nullptr>
 		constexpr iterator insert(const_iterator, _First, _Last) {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator erase(const_iterator) noexcept {
-			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this static_basic_string", false);
 			return iterator(nullptr);
 		}
 
 		constexpr iterator erase(const_iterator, const_iterator) noexcept {
-			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this static_basic_string", false);
 			return iterator(nullptr);
 		}
 
 		constexpr void pop_back() noexcept {
-			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this static_basic_string", false);
 		}
 
 		constexpr void pop_front() noexcept {
-			ZTD_ASSERT_MESSAGE("there is nothing to erase in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is nothing to erase in this static_basic_string", false);
 		}
 
 		constexpr const_reference front() const noexcept {
 #if 0
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 #endif
 			return *::ztd::empty_string<value_type>();
 		}
 
 		constexpr const_reference back() const noexcept {
 #if 0
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 #endif
 			return *::ztd::empty_string<value_type>();
 		}
@@ -392,68 +392,68 @@ namespace ztd {
 		}
 
 		constexpr reference operator[](size_type) {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 			return *static_cast<pointer>(nullptr);
 		}
 
 		constexpr const_reference operator[](size_type) const {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string", false);
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
 			return *static_cast<const_pointer>(nullptr);
 		}
 
 		constexpr void resize(size_type __count) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string to resize to anything but 0",
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string to resize to anything but 0",
 			     __count < size_type(1));
 		}
 
 		constexpr void resize(size_type __count, const value_type&) noexcept {
-			ZTD_ASSERT_MESSAGE("there is no capacity in this fixed_basic_string to resize to anything but 0",
+			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string to resize to anything but 0",
 			     __count < size_type(1));
 		}
 	};
 
 	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
-	constexpr bool operator==(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
-	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+	constexpr bool operator==(const ::ztd::static_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::static_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
 		return ::std::equal(__left.cbegin(), __left.cend(), __right.cbegin(), __right.cend());
 	}
 
 	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
-	constexpr bool operator!=(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
-	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+	constexpr bool operator!=(const ::ztd::static_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::static_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
 		return !::std::equal(__left.cbegin(), __left.cend(), __right.cbegin(), __right.cend());
 	}
 
 	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
-	constexpr bool operator<(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
-	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+	constexpr bool operator<(const ::ztd::static_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::static_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
 		return ::std::lexicographical_compare(
 		     __left.cbegin(), __left.cend(), __right.cbegin(), __right.cend(), ::std::less_equal<>());
 	}
 
 	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
-	constexpr bool operator>(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
-	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+	constexpr bool operator>(const ::ztd::static_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::static_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
 		return ::std::lexicographical_compare(
 		     __left.cbegin(), __left.cend(), __right.cbegin(), __right.cend(), ::std::greater<>());
 	}
 
 	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
-	constexpr bool operator<=(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
-	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+	constexpr bool operator<=(const ::ztd::static_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::static_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
 		return ::std::lexicographical_compare(
 		     __left.cbegin(), __left.cend(), __right.cbegin(), __right.cend(), ::std::less_equal<>());
 	}
 
 	template <typename _LeftTy, ::std::size_t _LeftMaxLength, typename _RightTy, ::std::size_t _RightMaxLength>
-	constexpr bool operator>=(const ::ztd::fixed_basic_string<_LeftTy, _LeftMaxLength>& __left,
-	     const ::ztd::fixed_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
+	constexpr bool operator>=(const ::ztd::static_basic_string<_LeftTy, _LeftMaxLength>& __left,
+	     const ::ztd::static_basic_string<_RightTy, _RightMaxLength>& __right) noexcept {
 		return ::std::lexicographical_compare(
 		     __left.cbegin(), __left.cend(), __right.cbegin(), __right.cend(), ::std::greater_equal<>());
 	}
 
-	ZTD_FIXED_CONTAINER_INLINE_ABI_NAMESPACE_CLOSE_I_
+	ZTD_STATIC_CONTAINERS_INLINE_ABI_NAMESPACE_CLOSE_I_
 
 } // namespace ztd
 
-#endif // ZTD_FIXED_CONTAINER_FIXED_BASIC_STRING_HPP
+#endif // ZTD_STATIC_CONTAINERS_STATIC_BASIC_STRING_HPP

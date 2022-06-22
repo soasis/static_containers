@@ -1,6 +1,6 @@
 # ============================================================================
 #
-# ztd.fixed_container
+# ztd.static_container
 #
 # Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 #
@@ -20,7 +20,7 @@ include(FetchContent)
 FetchContent_Declare(
 	Catch2
 	GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-	GIT_TAG        devel
+	GIT_TAG devel
 )
 FetchContent_MakeAvailable(Catch2)
 

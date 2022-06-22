@@ -1,5 +1,5 @@
 // =============================================================================
-// ztd::fixed_container
+// ztd.static_containers
 //
 // Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 //
@@ -11,7 +11,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 // ============================================================================ //
 
-#include <ztd/fixed_container.hpp>
+#include <ztd/static_containers.hpp>
 
 #include <catch2/catch_all.hpp>
 
@@ -19,9 +19,9 @@
 
 #include <memory>
 
-inline namespace ztd_fixed_container_tests_basic_insert {
+inline namespace ztd_static_containers_tests_basic_insert {
 	template <typename Container>
-	constexpr auto make_fixed_container(std::size_t elements) {
+	constexpr auto make_static_containers(std::size_t elements) {
 		using T = typename Container::value_type;
 		std::unique_ptr<T[]> init(new T[elements] {});
 		for (std::size_t i = 0; i < elements; ++i) {
@@ -93,7 +93,7 @@ inline namespace ztd_fixed_container_tests_basic_insert {
 				REQUIRE(value == expected_value);
 			}
 		}
-		if constexpr (ztd::is_fixed_basic_string_v<ztd::remove_cvref_t<Container>>) {
+		if constexpr (ztd::is_static_basic_string_v<ztd::remove_cvref_t<Container>>) {
 			if constexpr (!(std::is_class_v<T> || std::is_union_v<T>)) {
 				const T NullSentinelValue = {};
 				auto last_data            = c.data() + c.size();
@@ -103,19 +103,19 @@ inline namespace ztd_fixed_container_tests_basic_insert {
 			}
 		}
 	}
-} // namespace ztd_fixed_container_tests_basic_insert
+} // namespace ztd_static_containers_tests_basic_insert
 
 TEMPLATE_LIST_TEST_CASE(
-     "fixed_vector insert tests", "[fixed_vector][run_time][insert]", ztd::tests::scalar_types_list) {
+     "static_vector insert tests", "[static_vector][run_time][insert]", ztd::tests::scalar_types_list) {
 	constexpr std::size_t expected_capacity = 40;
 	constexpr std::size_t expected_size     = 5;
 
-	SECTION("fixed_vector") {
-		auto c = make_fixed_container<ztd::fixed_vector<TestType, expected_capacity>>(expected_size);
+	SECTION("static_vector") {
+		auto c = make_static_containers<ztd::static_vector<TestType, expected_capacity>>(expected_size);
 		test_container_insert(c, expected_capacity, expected_size);
 	}
-	SECTION("fixed_basic_string") {
-		auto c = make_fixed_container<ztd::fixed_basic_string<TestType, expected_capacity>>(expected_size);
+	SECTION("static_basic_string") {
+		auto c = make_static_containers<ztd::static_basic_string<TestType, expected_capacity>>(expected_size);
 		test_container_insert(c, expected_capacity, expected_size);
 	}
 }

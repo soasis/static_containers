@@ -1,6 +1,6 @@
 # ============================================================================
 #
-# ztd.fixed_container
+# ztd.static_container
 #
 # Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
 #
@@ -13,14 +13,14 @@
 #
 # ============================================================================
 
-file(GLOB_RECURSE ztd.fixed_container.tests.inclusion.sources
+file(GLOB_RECURSE ztd.static_containers.tests.inclusion.sources
 	LIST_DIRECTORIES FALSE
 	CONFIGURE_DEPENDS
 	source/*.cpp
 )
 
-add_executable(ztd.fixed_container.tests.inclusion ${ztd.fixed_container.tests.inclusion.sources})
-target_compile_options(ztd.fixed_container.tests.inclusion
+add_executable(ztd.static_containers.tests.inclusion ${ztd.static_containers.tests.inclusion.sources})
+target_compile_options(ztd.static_containers.tests.inclusion
 	PRIVATE
 	${--utf8-literal-encoding}
 	${--utf8-source-encoding}
@@ -33,9 +33,9 @@ target_compile_options(ztd.fixed_container.tests.inclusion
 	${--extra-constexpr-depth}
 	${--extra-constexpr-steps}
 )
-target_link_libraries(ztd.fixed_container.tests.inclusion
+target_link_libraries(ztd.static_containers.tests.inclusion
 	PRIVATE
-	ztd::fixed_container
+	ztd.static_containers
 	${CMAKE_DL_LIBS}
 )
-add_test(NAME ztd.fixed_container.tests.inclusion COMMAND ztd.fixed_container.tests.inclusion)
+add_test(NAME ztd.static_containers.tests.inclusion COMMAND ztd.static_containers.tests.inclusion)
