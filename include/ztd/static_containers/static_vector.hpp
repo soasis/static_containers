@@ -63,8 +63,8 @@ namespace ztd {
 	private:
 		template <typename... _Args>
 		static constexpr bool _S_emplace_noexcept() noexcept {
-			return ::std::is_nothrow_constructible_v<value_type, _Args...> // cf-hack
-			     && (::std::is_nothrow_move_assignable_v<value_type>       // cf-hack
+			return ::std::is_nothrow_constructible_v<value_type, _Args...> // cf
+			     && (::std::is_nothrow_move_assignable_v<value_type>       // cf
 			          || ::std::is_nothrow_copy_assignable_v<value_type>);
 		}
 
@@ -85,8 +85,8 @@ namespace ztd {
 		}
 
 		template <typename _First, typename _Last,
-		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf-hack
-		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
+		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf
+		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf
 		          >* = nullptr>
 		constexpr static_vector(_First __first, _Last __last) noexcept : __base_storage() {
 			this->insert(this->cend(), ::std::move(__first), ::std::move(__last));
@@ -170,8 +170,8 @@ namespace ztd {
 		}
 
 		template <typename _First, typename _Last,
-		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf-hack
-		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
+		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf
+		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf
 		          >* = nullptr>
 		constexpr iterator insert(const_iterator __where, _First __first, _Last __last) {
 			if (__first == __last) {
@@ -575,8 +575,8 @@ namespace ztd {
 		}
 
 		template <typename _First, typename _Last,
-		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf-hack
-		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
+		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf
+		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf
 		          >* = nullptr>
 		constexpr iterator insert(const_iterator, _First, _Last) {
 			ZTD_ASSERT_MESSAGE("there is no capacity in this static_vector", false);

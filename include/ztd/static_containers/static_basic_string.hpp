@@ -90,8 +90,8 @@ namespace ztd {
 		}
 
 		template <typename _First, typename _Last,
-		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf-hack
-		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
+		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf
+		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf
 		          >* = nullptr>
 		constexpr static_basic_string(_First __first, _Last __last) noexcept
 		: __base(::std::move(__first), ::std::move(__last)) {
@@ -168,8 +168,8 @@ namespace ztd {
 		}
 
 		template <typename _First, typename _Last,
-		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf-hack
-		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
+		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf
+		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf
 		          >* = nullptr>
 		constexpr iterator insert(const_iterator __where, _First __first, _Last __last) {
 			iterator __itval = this->__base::insert(::std::move(__where), ::std::move(__first), ::std::move(__last));
@@ -308,8 +308,8 @@ namespace ztd {
 		}
 
 		template <typename _First, typename _Last,
-		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf-hack
-		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf-hack
+		     ::std::enable_if_t<!::std::is_integral_v<_First>                    // cf
+		          && !::std::is_same_v<::ztd::remove_cvref_t<_Last>, value_type> // cf
 		          >* = nullptr>
 		constexpr iterator insert(const_iterator, _First, _Last) {
 			ZTD_ASSERT_MESSAGE("there is no capacity in this static_basic_string", false);
