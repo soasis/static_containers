@@ -399,14 +399,14 @@ namespace ztd {
 
 			// Step 0: create a new object off-to-the-right
 			auto __where_middle_last = ::std::prev(__where_last);
-			::ztd::construct_at(::ztd::idk_adl::adl_to_address(__where_last), *__where_middle_last);
+			::ztd::construct_at(::ztd::to_address(__where_last), *__where_middle_last);
 			// Step 1: shift everything to the right, if size is large enough to need it
 			if (__where_middle_last != __where_first) {
 				[[maybe_unused]] auto __destination_last
 				     = ::std::move_backward(__where_first, __where_middle_last, __where_last);
 			}
 			// Step 2: construct the new value in place
-			::ztd::construct_at(::ztd::idk_adl::adl_to_address(__where_first), ::std::forward<_Args>(__args)...);
+			::ztd::construct_at(::ztd::to_address(__where_first), ::std::forward<_Args>(__args)...);
 			++this->_M_layout._M_size;
 			return __where_first;
 		}
@@ -428,7 +428,7 @@ namespace ztd {
 					     "it impossible to properly copy in a constexpr constext in a pre-C++20 world.");
 				}
 			}
-			::ztd::destroy_at(::ztd::idk_adl::adl_to_address(__where_last));
+			::ztd::destroy_at(::ztd::to_address(__where_last));
 			--this->_M_layout._M_size;
 			return __where_first;
 		}

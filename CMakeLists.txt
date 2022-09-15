@@ -13,8 +13,8 @@
 #
 # ============================================================================
 
-cmake_minimum_required(VERSION 3.16.0)
-cmake_policy(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21.0)
+cmake_policy(VERSION 3.21)
 
 # # Project kickstart
 # Includes a bunch of basic flags and utilities shared across projects
