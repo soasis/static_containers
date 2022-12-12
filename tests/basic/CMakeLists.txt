@@ -37,6 +37,7 @@ target_compile_options(ztd.static_containers.tests.basic
 	${--extra-constexpr-depth}
 	${--extra-constexpr-steps}
 	${--allow-zero-variadic-macro-arguments}
+	${--allow-stringop-overflow}
 )
 target_link_libraries(ztd.static_containers.tests.basic
 	PRIVATE

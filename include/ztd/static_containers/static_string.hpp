@@ -44,4 +44,4 @@ namespace ztd {
 
 } // namespace ztd
 
-#endif // ZTD_STATIC_CONTAINERS_STATIC_STRING_HPP
+#endif

@@ -21,4 +21,4 @@
 #include <ztd/static_containers/static_string.hpp>
 #include <ztd/static_containers/is.hpp>
 
-#endif // ZTD_STATIC_CONTAINERS_HPP
+#endif

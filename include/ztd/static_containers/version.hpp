@@ -38,4 +38,4 @@
 
 // clang-format on
 
-#endif // ZTD_STATIC_CONTAINERS_VERSION_HPP
+#endif
