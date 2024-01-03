@@ -1,7 +1,7 @@
 // =============================================================================
 // ztd.static_containers
 //
-// Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
+// © ThePhD <phdofthehouse@gmail.com>
 //
 // To the extent possible under law, the author(s) have dedicated all copyright and related
 // and neighboring rights to this software to the public domain worldwide. This software is
@@ -141,20 +141,23 @@ namespace ztd {
 		}
 
 		constexpr iterator insert(const_iterator __where, value_type&& __value) noexcept(
-		     ::std::is_nothrow_move_constructible_v<
-		          value_type> && (::std::is_nothrow_move_assignable_v<value_type> || ::std::is_nothrow_copy_assignable_v<value_type>)) {
+		     ::std::is_nothrow_move_constructible_v<value_type>
+		     && (::std::is_nothrow_move_assignable_v<value_type>
+		          || ::std::is_nothrow_copy_assignable_v<value_type>)) {
 			return this->emplace(::std::move(__where), ::std::move(__value));
 		}
 
 		constexpr iterator insert(const_iterator __where, const value_type& __value) noexcept(
-		     ::std::is_nothrow_copy_constructible_v<
-		          value_type> && (::std::is_nothrow_move_assignable_v<value_type> || ::std::is_nothrow_copy_assignable_v<value_type>)) {
+		     ::std::is_nothrow_copy_constructible_v<value_type>
+		     && (::std::is_nothrow_move_assignable_v<value_type>
+		          || ::std::is_nothrow_copy_assignable_v<value_type>)) {
 			return this->emplace(::std::move(__where), __value);
 		}
 
 		constexpr iterator insert(const_iterator __where, ::std::initializer_list<value_type> __values) noexcept(
-		     ::std::is_nothrow_copy_constructible_v<
-		          value_type> && (::std::is_nothrow_move_assignable_v<value_type> || ::std::is_nothrow_copy_assignable_v<value_type>)) {
+		     ::std::is_nothrow_copy_constructible_v<value_type>
+		     && (::std::is_nothrow_move_assignable_v<value_type>
+		          || ::std::is_nothrow_copy_assignable_v<value_type>)) {
 			return this->insert(::std::move(__where), __values.begin(), __values.end());
 		}
 

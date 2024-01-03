@@ -2,7 +2,7 @@
 // | ztd.static_containers |
 //   -----------------
 
-// Written 2019 - 2022 by ThePhD <phdofthehouse@gmail.com>
+// © ThePhD <phdofthehouse@gmail.com>
 
 // To the extent possible under law, the author(s) have dedicated all copyright and related
 // and neighboring rights to this software to the public domain worldwide. This software is
