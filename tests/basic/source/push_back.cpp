@@ -25,7 +25,7 @@ inline namespace ztd_static_containers_tests_basic_push_back {
 		for (std::size_t i = 0; i < elements; ++i) {
 			if ((i % 2) == 1) {
 				if constexpr (std::is_arithmetic_v<T>) {
-					c.emplace_back(i);
+					c.emplace_back(T(i));
 				}
 				else {
 					c.emplace_back();
