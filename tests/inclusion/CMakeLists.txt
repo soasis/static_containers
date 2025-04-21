@@ -13,29 +13,10 @@
 #
 # ============================================================================
 
-file(GLOB_RECURSE ztd.static_containers.tests.inclusion.sources
-	LIST_DIRECTORIES FALSE
-	CONFIGURE_DEPENDS
-	source/*.cpp
-)
+include(GenerateInclusionTest)
 
-add_executable(ztd.static_containers.tests.inclusion ${ztd.static_containers.tests.inclusion.sources})
-target_compile_options(ztd.static_containers.tests.inclusion
-	PRIVATE
-	${--utf8-literal-encoding}
-	${--utf8-source-encoding}
-	${--disable-permissive}
-	${--warn-pedantic}
-	${--warn-all}
-	${--warn-extra}
-	${--warn-errors}
-	${--template-debugging-mode}
-	${--extra-constexpr-depth}
-	${--extra-constexpr-steps}
+generate_inclusion_test(
+	NAME "ztd.static_containers.tests.inclusion"
+	ROOT "../../include"
+	LINK_LIBRARIES ztd::static_containers
 )
-target_link_libraries(ztd.static_containers.tests.inclusion
-	PRIVATE
-	ztd.static_containers
-	${CMAKE_DL_LIBS}
-)
-add_test(NAME ztd.static_containers.tests.inclusion COMMAND ztd.static_containers.tests.inclusion)
