@@ -1,5 +1,5 @@
 // =============================================================================
-// ztd.static_containers
+// ztd.inline_containers
 //
 // © ThePhD <phdofthehouse@gmail.com>
 //
@@ -13,12 +13,12 @@
 
 #pragma once
 
-#ifndef ZTD_STATIC_CONTAINERS_HPP
-#define ZTD_STATIC_CONTAINERS_HPP
+#ifndef ZTD_INLINE_CONTAINERS_HPP
+#define ZTD_INLINE_CONTAINERS_HPP
 
-#include <ztd/static_containers/version.hpp>
-#include <ztd/static_containers/static_vector.hpp>
-#include <ztd/static_containers/static_string.hpp>
-#include <ztd/static_containers/is.hpp>
+#include <ztd/inline_containers/version.hpp>
+#include <ztd/inline_containers/inline_vector.hpp>
+#include <ztd/inline_containers/inline_string.hpp>
+#include <ztd/inline_containers/is.hpp>
 
 #endif

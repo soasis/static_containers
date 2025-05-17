@@ -1,0 +1,13 @@
+@PACKAGE_INIT@
+
+if (TARGET ztd::inline_containers)
+	get_target_property(ZTD_INLINE_CONTAINERS_INCLUDE_DIRS
+		ztd.inline_containers INTERFACE_INCLUDE_DIRECTORIES)
+	set_and_check(ZTD_INLINE_CONTAINERS_INCLUDE_DIRS "${ZTD_INLINE_CONTAINERS_INCLUDE_DIRS}")
+endif()
+
+if(TARGET ztd::inline_containers::single)
+	get_target_property(ZTD_INLINE_CONTAINERS_SINGLE_INCLUDE_DIRS
+		ztd.inline_containers.single INTERFACE_INCLUDE_DIRECTORIES)
+	set_and_check(ZTD_INLINE_CONTAINERS_SINGLE_INCLUDE_DIRS "${ZTD_INLINE_CONTAINERS_SINGLE_INCLUDE_DIRS}")
+endif()

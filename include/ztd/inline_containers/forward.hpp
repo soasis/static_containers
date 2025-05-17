@@ -1,5 +1,5 @@
 // =============================================================================
-// ztd.static_containers
+// ztd.inline_containers
 //
 // © ThePhD <phdofthehouse@gmail.com>
 //
@@ -13,23 +13,23 @@
 
 #pragma once
 
-#ifndef ZTD_STATIC_CONTAINERS_FORWARD_HPP
-#define ZTD_STATIC_CONTAINERS_FORWARD_HPP
+#ifndef ZTD_INLINE_CONTAINERS_FORWARD_HPP
+#define ZTD_INLINE_CONTAINERS_FORWARD_HPP
 
-#include <ztd/static_containers/version.hpp>
+#include <ztd/inline_containers/version.hpp>
 
 #include <cstddef>
 
 namespace ztd {
-	ZTD_STATIC_CONTAINERS_INLINE_ABI_NAMESPACE_OPEN_I_
+	ZTD_INLINE_CONTAINERS_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename, ::std::size_t>
-	class static_vector;
+	class inline_vector;
 
 	template <typename, ::std::size_t>
-	class static_basic_string;
+	class inline_basic_string;
 
-	ZTD_STATIC_CONTAINERS_INLINE_ABI_NAMESPACE_CLOSE_I_
+	ZTD_INLINE_CONTAINERS_INLINE_ABI_NAMESPACE_CLOSE_I_
 } // namespace ztd
 
 #endif

@@ -1,5 +1,5 @@
 // =============================================================================
-// ztd.static_containers
+// ztd.inline_containers
 //
 // © ThePhD <phdofthehouse@gmail.com>
 //
@@ -13,12 +13,12 @@
 
 #pragma once
 
-#ifndef ZTD_STATIC_CONTAINERS_DETAIL_STORAGE_HPP
-#define ZTD_STATIC_CONTAINERS_DETAIL_STORAGE_HPP
+#ifndef ZTD_INLINE_CONTAINERS_DETAIL_STORAGE_HPP
+#define ZTD_INLINE_CONTAINERS_DETAIL_STORAGE_HPP
 
-#include <ztd/static_containers/version.hpp>
+#include <ztd/inline_containers/version.hpp>
 
-#include <ztd/static_containers/forward.hpp>
+#include <ztd/inline_containers/forward.hpp>
 
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/uninit.hpp>
@@ -27,7 +27,7 @@
 #include <climits>
 
 namespace ztd {
-	ZTD_STATIC_CONTAINERS_INLINE_ABI_NAMESPACE_OPEN_I_
+	ZTD_INLINE_CONTAINERS_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __fv_detail {
 
@@ -105,9 +105,9 @@ namespace ztd {
 		class __storage {
 		private:
 			template <typename, ::std::size_t>
-			friend class ::ztd::static_vector;
+			friend class ::ztd::inline_vector;
 			template <typename, ::std::size_t>
-			friend class ::ztd::static_basic_string;
+			friend class ::ztd::inline_basic_string;
 
 			using __value_type   = _Ty;
 			using __storage_type = ztd::uninit<__value_type>;
@@ -180,9 +180,9 @@ namespace ztd {
 		class __storage<_Ty, _Capacity, true> {
 		private:
 			template <typename, ::std::size_t>
-			friend class ::ztd::static_vector;
+			friend class ::ztd::inline_vector;
 			template <typename, ::std::size_t>
-			friend class ::ztd::static_basic_string;
+			friend class ::ztd::inline_basic_string;
 
 			using __value_type   = _Ty;
 			using __storage_type = __value_type;
@@ -247,7 +247,7 @@ namespace ztd {
 		};
 	} // namespace __fv_detail
 
-	ZTD_STATIC_CONTAINERS_INLINE_ABI_NAMESPACE_CLOSE_I_
+	ZTD_INLINE_CONTAINERS_INLINE_ABI_NAMESPACE_CLOSE_I_
 
 } // namespace ztd
 

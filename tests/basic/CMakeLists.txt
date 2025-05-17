@@ -1,6 +1,6 @@
 # ============================================================================
 #
-# ztd.static_container
+# ztd.inline_container
 #
 # © ThePhD <phdofthehouse@gmail.com>
 #
@@ -14,17 +14,17 @@
 # ============================================================================
 
 # # Tests
-file(GLOB_RECURSE ztd.static_containers.tests.basic.sources
+file(GLOB_RECURSE ztd.inline_containers.tests.basic.sources
 	LIST_DIRECTORIES FALSE
 	CONFIGURE_DEPENDS
 	source/*.cpp
 )
 
-add_executable(ztd.static_containers.tests.basic ${ztd.static_containers.tests.basic.sources})
-target_compile_definitions(ztd.static_containers.tests.basic
+add_executable(ztd.inline_containers.tests.basic ${ztd.inline_containers.tests.basic.sources})
+target_compile_definitions(ztd.inline_containers.tests.basic
 	PRIVATE
 )
-target_compile_options(ztd.static_containers.tests.basic
+target_compile_options(ztd.inline_containers.tests.basic
 	PRIVATE
 	${--utf8-literal-encoding}
 	${--utf8-source-encoding}
@@ -39,10 +39,10 @@ target_compile_options(ztd.static_containers.tests.basic
 	${--allow-zero-variadic-macro-arguments}
 	${--allow-stringop-overflow}
 )
-target_link_libraries(ztd.static_containers.tests.basic
+target_link_libraries(ztd.inline_containers.tests.basic
 	PRIVATE
-	ztd.static_containers
+	ztd.inline_containers
 	Catch2::Catch2
 	${CMAKE_DL_LIBS}
 )
-add_test(NAME ztd.static_containers.tests.basic COMMAND ztd.static_containers.tests.basic)
+add_test(NAME ztd.inline_containers.tests.basic COMMAND ztd.inline_containers.tests.basic)

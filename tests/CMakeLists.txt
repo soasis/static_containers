@@ -1,6 +1,6 @@
 # ============================================================================
 #
-# ztd.static_container
+# ztd.inline_container
 #
 # © ThePhD <phdofthehouse@gmail.com>
 #

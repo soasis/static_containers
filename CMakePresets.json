@@ -18,9 +18,9 @@
                "cacheVariables": {
                     "CMAKE_CXX_STANDARD": "$env{CMAKE_CXX_STANDARD}",
                     "CMAKE_C_STANDARD": "$env{CMAKE_C_STANDARD}",
-                    "ZTD_STATIC_CONTAINERS_EXAMPLES": true,
-                    "ZTD_STATIC_CONTAINERS_TESTS": true,
-                    "ZTD_STATIC_CONTAINERS_BENCHMARKS": true
+                    "ZTD_INLINE_CONTAINERS_EXAMPLES": true,
+                    "ZTD_INLINE_CONTAINERS_TESTS": true,
+                    "ZTD_INLINE_CONTAINERS_BENCHMARKS": true
                }
           },
           {
@@ -62,12 +62,12 @@
                "description": "Generates the documentation for any system",
                "inherits": "base",
                "cacheVariables": {
-                    "ZTD_STATIC_CONTAINERS_GENERATE_SINGLE": false,
-                    "ZTD_STATIC_CONTAINERS_EXAMPLES": false,
-                    "ZTD_STATIC_CONTAINERS_TESTS": false,
-                    "ZTD_STATIC_CONTAINERS_BENCHMARKS": false,
-                    "ZTD_STATIC_CONTAINERS_EXCLUDE_FROM_ALL": true,
-                    "ZTD_STATIC_CONTAINERS_DOCUMENTATION": true
+                    "ZTD_INLINE_CONTAINERS_GENERATE_SINGLE": false,
+                    "ZTD_INLINE_CONTAINERS_EXAMPLES": false,
+                    "ZTD_INLINE_CONTAINERS_TESTS": false,
+                    "ZTD_INLINE_CONTAINERS_BENCHMARKS": false,
+                    "ZTD_INLINE_CONTAINERS_EXCLUDE_FROM_ALL": true,
+                    "ZTD_INLINE_CONTAINERS_DOCUMENTATION": true
                }
           },
           {
@@ -77,13 +77,13 @@
                "description": "Generates the documentation for a ReadTheDocs build",
                "inherits": "base",
                "cacheVariables": {
-                    "ZTD_STATIC_CONTAINERS_GENERATE_SINGLE": false,
-                    "ZTD_STATIC_CONTAINERS_EXAMPLES": false,
-                    "ZTD_STATIC_CONTAINERS_TESTS": false,
-                    "ZTD_STATIC_CONTAINERS_BENCHMARKS": false,
-                    "ZTD_STATIC_CONTAINERS_EXCLUDE_FROM_ALL": true,
-                    "ZTD_STATIC_CONTAINERS_DOCUMENTATION": true,
-                    "ZTD_STATIC_CONTAINERS_DOCUMENTATION_NO_SPHINX": true
+                    "ZTD_INLINE_CONTAINERS_GENERATE_SINGLE": false,
+                    "ZTD_INLINE_CONTAINERS_EXAMPLES": false,
+                    "ZTD_INLINE_CONTAINERS_TESTS": false,
+                    "ZTD_INLINE_CONTAINERS_BENCHMARKS": false,
+                    "ZTD_INLINE_CONTAINERS_EXCLUDE_FROM_ALL": true,
+                    "ZTD_INLINE_CONTAINERS_DOCUMENTATION": true,
+                    "ZTD_INLINE_CONTAINERS_DOCUMENTATION_NO_SPHINX": true
                }
           },
           {
@@ -98,10 +98,10 @@
                     "dev": true
                },
                "cacheVariables": {
-                    "ZTD_STATIC_CONTAINERS_SCRATCH": true,
-                    "ZTD_STATIC_CONTAINERS_TESTS": true,
-                    "ZTD_STATIC_CONTAINERS_EXAMPLES": true,
-                    "ZTD_STATIC_CONTAINERS_DOCUMENTATION": true,
+                    "ZTD_INLINE_CONTAINERS_SCRATCH": true,
+                    "ZTD_INLINE_CONTAINERS_TESTS": true,
+                    "ZTD_INLINE_CONTAINERS_EXAMPLES": true,
+                    "ZTD_INLINE_CONTAINERS_DOCUMENTATION": true,
                     "FETCHCONTENT_SOURCE_DIR_ZTD.CMAKE": "${sourceDir}/../cmake",
                     "FETCHCONTENT_SOURCE_DIR_ZTD.IDK": "${sourceDir}/../idk",
                     "CMAKE_CXX_STANDARD": "23",

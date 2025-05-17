@@ -1,6 +1,6 @@
 # ============================================================================
 #
-# ztd.static_container
+# ztd.inline_container
 #
 # © ThePhD <phdofthehouse@gmail.com>
 #
@@ -16,7 +16,7 @@
 include(GenerateInclusionTest)
 
 generate_inclusion_test(
-	NAME "ztd.static_containers.tests.inclusion"
+	NAME "ztd.inline_containers.tests.inclusion"
 	ROOT "../../include"
-	LINK_LIBRARIES ztd::static_containers
+	LINK_LIBRARIES ztd::inline_containers
 )

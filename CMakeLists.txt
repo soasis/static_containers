@@ -1,6 +1,6 @@
 # ============================================================================
 #
-# ztd.static_containers
+# ztd.inline_containers
 #
 # © ThePhD <phdofthehouse@gmail.com>
 #
@@ -28,12 +28,12 @@ set(CMAKE_PROJECT_INCLUDE ${ZTD_CMAKE_PROJECT_PRELUDE})
 # # Project declaration
 # informs about the project, gives a description, version and MOST IMPORTANTLY
 # the languages the project is going to use. Required.
-project(ztd.static_containers
+project(ztd.inline_containers
 	VERSION 0.5.0
 	DESCRIPTION "A library for a fixed-capacity vector."
 	LANGUAGES C CXX)
 
-if(ZTD_STATIC_CONTAINERS_READTHEDOCS)
+if(ZTD_INLINE_CONTAINERS_READTHEDOCS)
 	# ReadTheDocs seems unable to handle the include at the project level: something must be going wrong?
 	include(CheckCXXCompilerFlag)
 	include(CheckCCompilerFlag)
@@ -56,13 +56,13 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # # # Top-Level Directories
 # Check if this is the top-level project or not
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-	set(ZTD_STATIC_CONTAINERS_IS_TOP_LEVEL_PROJECT YES)
+	set(ZTD_INLINE_CONTAINERS_IS_TOP_LEVEL_PROJECT YES)
 else()
-	set(ZTD_STATIC_CONTAINERS_IS_TOP_LEVEL_PROJECT NO)
+	set(ZTD_INLINE_CONTAINERS_IS_TOP_LEVEL_PROJECT NO)
 endif()
 
 # Modify bad flags / change defaults if we are the top level
-if(ZTD_STATIC_CONTAINERS_IS_TOP_LEVEL_PROJECT)
+if(ZTD_INLINE_CONTAINERS_IS_TOP_LEVEL_PROJECT)
 	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
 		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CMAKE_BUILD_TYPE}/lib")
 		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CMAKE_BUILD_TYPE}/bin")
@@ -81,7 +81,7 @@ if(ZTD_STATIC_CONTAINERS_IS_TOP_LEVEL_PROJECT)
 		set(CMAKE_C_STANDARD 11)
 	endif()
 
-	if(ZTD_STATIC_CONTAINERS_BENCHMARKS OR ZTD_STATIC_CONTAINERS_EXAMPLES OR ZTD_STATIC_CONTAINERS_TESTS OR ZTD_STATIC_CONTAINERS_SCRATCH)
+	if(ZTD_INLINE_CONTAINERS_BENCHMARKS OR ZTD_INLINE_CONTAINERS_EXAMPLES OR ZTD_INLINE_CONTAINERS_TESTS OR ZTD_INLINE_CONTAINERS_SCRATCH)
 		# normal flags
 		check_compiler_flag(disable-permissive MSVC /permissive- GCC -pedantic)
 
@@ -105,10 +105,10 @@ include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
 # # Options
-option(ZTD_STATIC_CONTAINERS_CI "Whether or not we are in contiguous integration mode" OFF)
-option(ZTD_STATIC_CONTAINERS_TESTS "Enable build of tests" OFF)
-option(ZTD_STATIC_CONTAINERS_EXAMPLES "Enable build of examples" OFF)
-option(ZTD_STATIC_CONTAINERS_BENCHMARKS "Enable build of benchmarks" OFF)
+option(ZTD_INLINE_CONTAINERS_CI "Whether or not we are in contiguous integration mode" OFF)
+option(ZTD_INLINE_CONTAINERS_TESTS "Enable build of tests" OFF)
+option(ZTD_INLINE_CONTAINERS_EXAMPLES "Enable build of examples" OFF)
+option(ZTD_INLINE_CONTAINERS_BENCHMARKS "Enable build of benchmarks" OFF)
 
 # # Dependencies
 # ztd.idk
@@ -117,20 +117,20 @@ FetchContent_Declare(ztd.idk
 	GIT_TAG main)
 FetchContent_MakeAvailable(ztd.idk)
 
-file(GLOB_RECURSE ztd.static_containers.sources
+file(GLOB_RECURSE ztd.inline_containers.sources
 	LIST_DIRECTORIES FALSE
 	CONFIGURE_DEPENDS
 	include/ztd/**.*
 )
 
-add_library(ztd.static_containers INTERFACE)
-add_library(ztd::static_containers ALIAS ztd.static_containers)
-target_sources(ztd.static_containers INTERFACE ${ztd.static_containers.sources})
-target_link_libraries(ztd.static_containers
+add_library(ztd.inline_containers INTERFACE)
+add_library(ztd::inline_containers ALIAS ztd.inline_containers)
+target_sources(ztd.inline_containers INTERFACE ${ztd.inline_containers.sources})
+target_link_libraries(ztd.inline_containers
 	INTERFACE
 	ztd::idk
 )
-target_include_directories(ztd.static_containers INTERFACE
+target_include_directories(ztd.inline_containers INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:include>
 )
@@ -141,33 +141,33 @@ install(DIRECTORY include/
 # # Config / Version packaging
 # Version configurations
 configure_package_config_file(
-	cmake/ztd.static_containers-config.cmake.in
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.static_containers/ztd.static_containers-config.cmake"
-	INSTALL_DESTINATION lib/cmake/ztd.static_containers
+	cmake/ztd.inline_containers-config.cmake.in
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.inline_containers/ztd.inline_containers-config.cmake"
+	INSTALL_DESTINATION lib/cmake/ztd.inline_containers
 	NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
 write_basic_package_version_file(
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.static_containers/ztd.static_containers-config-version.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.inline_containers/ztd.inline_containers-config-version.cmake"
 	COMPATIBILITY SameMajorVersion)
 
-export(TARGETS ztd.static_containers
+export(TARGETS ztd.inline_containers
 	FILE
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.static_containers/ztd.static_containers-targets.cmake")
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.inline_containers/ztd.inline_containers-targets.cmake")
 
 # # Benchmarks, Tests, Examples
-if(ZTD_STATIC_CONTAINERS_TESTS)
+if(ZTD_INLINE_CONTAINERS_TESTS)
 	enable_testing()
 endif()
 
-if(ZTD_STATIC_CONTAINERS_TESTS)
+if(ZTD_INLINE_CONTAINERS_TESTS)
 	enable_testing()
 	add_subdirectory(tests)
 endif()
 
-if(ZTD_STATIC_CONTAINERS_EXAMPLES)
+if(ZTD_INLINE_CONTAINERS_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
-if(ZTD_STATIC_CONTAINERS_BENCHMARKS)
+if(ZTD_INLINE_CONTAINERS_BENCHMARKS)
 	add_subdirectory(benchmarks)
 endif()
